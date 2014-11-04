@@ -24,4 +24,6 @@ public class GameRuleConstants {
 
     static final String PLACE_WALL = "placeWall";
     static final String MOVE_PAWN = "movePawn";
+
+    static final int TOTAL_WALL_NUM = 20;
 }
