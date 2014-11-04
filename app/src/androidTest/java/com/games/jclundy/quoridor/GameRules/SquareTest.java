@@ -18,7 +18,7 @@ public class SquareTest extends ApplicationTestCase<Application> {
         assertEquals(4, square.col);
         assertEquals(8, square.adjacencySet.size());
         assertFalse(square.hasWall);
-        assertEquals(0, square.occupierID);
+        assertEquals(GameRuleConstants.EMPTY, square.occupierID);
     }
 
     public void testInitializationEdgeCases(){
@@ -28,7 +28,7 @@ public class SquareTest extends ApplicationTestCase<Application> {
         assertEquals(0, square.col);
         assertEquals(3, square.adjacencySet.size());
         assertFalse(square.hasWall);
-        assertEquals(0, square.occupierID);
+        assertEquals(GameRuleConstants.EMPTY, square.occupierID);
     }
 
     public void testOccupySquare(){
@@ -48,24 +48,26 @@ public class SquareTest extends ApplicationTestCase<Application> {
 
     public void testisInAdjacencySet(){
         //left-hand corner
-        Square square = new Square(0);
-        compareSets(TestConstants.ZERO_SET, square);
+        isAdjacentShouldBeTrueForSquaresInAdjacencySet(0, TestConstants.ZERO_SET);
 
         //right-hand corner
-        square = new Square(80);
-        compareSets(TestConstants.EIGHTY_SET, square);
+        isAdjacentShouldBeTrueForSquaresInAdjacencySet(80, TestConstants.EIGHTY_SET);
 
         //middle-of board
 
-        square = new Square(40);
-        compareSets(TestConstants.FORTY_SET, square);
+        isAdjacentShouldBeTrueForSquaresInAdjacencySet(40, TestConstants.FORTY_SET);
+
+        isAdjacentShouldBeTrueForSquaresInAdjacencySet(4, TestConstants.FOUR_SET);
     }
 
-    private void compareSets(int[] expected, Square square){
+    private void isAdjacentShouldBeTrueForSquaresInAdjacencySet(int index, int[] expected){
+        Square square = new Square(index);
         List<Integer> actual = square.adjacencySet;
         assertEquals(expected.length, actual.size());
-        for(int i = 0; i < actual.size() && i < expected.length; i++)
+        for(int i = 0; i < actual.size(); i++){
+            assertTrue(square.isAdjacent(expected[i]));
             assertTrue(actual.contains(expected[i]));
+        }
     }
     private void compareSets(List<Integer> expected, Square square){
         List<Integer> actual = square.adjacencySet;
@@ -87,22 +89,15 @@ public class SquareTest extends ApplicationTestCase<Application> {
         return set;
     }
 
-    private void compareRemovalFromAdjacency(int squareNum, int notInSet, int inSet, List<Integer> finalSet){
-        Square square = new Square(squareNum);
-        List<Integer> originalSet = square.adjacencySet;
-        square.removeFromAdjacencySet(notInSet);
-        compareSets(originalSet, square);
-        square.removeFromAdjacencySet(inSet);
-        compareSets(finalSet, square);
-    }
-
     private void compareRemoveEachSquareInSet(int squareNum, int[] defaultSet){
-        List<Integer> set = initalizeListWithArray(defaultSet);
-        for(int i = 0; i < set.size(); i++){
-            List<Integer> finalSet = set;
-            int itemToRemove = finalSet.get(i);
-            finalSet.remove(itemToRemove);
-            compareRemovalFromAdjacency(squareNum, squareNum + 18, itemToRemove, finalSet);
+        List<Integer> expectedSet = initalizeListWithArray(defaultSet);
+        Square square = new Square(squareNum);
+        for(int i = 0; i < expectedSet.size(); i++){
+            assertEquals(expectedSet.size(),square.adjacencySet.size());
+            int itemToRemove = expectedSet.get(i);
+            expectedSet.remove(i);
+            square.removeFromAdjacencySet(itemToRemove);
+            compareSets(expectedSet, square);
         }
     }
 
