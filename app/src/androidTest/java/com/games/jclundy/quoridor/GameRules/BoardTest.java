@@ -48,19 +48,23 @@ public class BoardTest extends ApplicationTestCase<Application>{
         assertEquals(13, board.getPlayerPosition(id));
 
         board.movePiece(id, 23);
-        assertEquals(13, board.getPlayerPosition(id));
+        assertEquals(23, board.getPlayerPosition(id));
+
+        board.movePiece(id, 13);
 
         board.movePiece(id, 21);
-        assertEquals(13, board.getPlayerPosition(id));
+        assertEquals(21, board.getPlayerPosition(id));
+        board.movePiece(id, 13);
 
         board.movePiece(id, 3);
-        assertEquals(13, board.getPlayerPosition(id));
+        assertEquals(3, board.getPlayerPosition(id));
+        board.movePiece(id, 13);
 
         board.movePiece(id, 5);
-        assertEquals(13, board.getPlayerPosition(id));
+        assertEquals(5, board.getPlayerPosition(id));
 
         board.movePiece(id, 89);
-        assertEquals(13, board.getPlayerPosition(id));
+        assertEquals(5, board.getPlayerPosition(id));
 
         board.movePiece(id, 4);
         assertEquals(4, board.getPlayerPosition(id));
@@ -88,19 +92,31 @@ public class BoardTest extends ApplicationTestCase<Application>{
         //case 3: placing horizontal in right edge of board
         board.placeWall(17, false);
         int[] expected4 = {16, 7, 8};
-        compareSets(expected4, board, 9);
+        compareSets(expected4, board, 17);
         //case 4: place vertical right edge
         int[] expected5 = {25, 34, 35};
         compareSets(expected5, board, 26);
 
         board.placeWall(26, true);
         int[] expected6 = {35};
-        compareSets(expected1, board, 26);
+        compareSets(expected6, board, 26);
         //case 5: trying to overlap walls
         board.placeWall(22, false);
         List<Integer> expected7 = board.squares[22].adjacencySet;
         board.placeWall(22, true);
         compareSets(expected7, board, 22);
+
+
+        //case 7: place on top right corner of board
+        board.placeWall(80, true);
+        int[] expected8 = {71};
+        compareSets(expected8, board, 80);
+
+        //case  8: place in top edge of board
+        board.placeWall(76, false);
+        int [] expected9 = {75, 66, 77};
+        compareSets(expected9, board, 76);
+
     }
 
     private void compareSets(int[] expected, Board board, int index){
@@ -115,10 +131,6 @@ public class BoardTest extends ApplicationTestCase<Application>{
         assertEquals(expected.size(), actual.size());
         for(int i = 0; i < actual.size() && i < expected.size(); i++)
             assertTrue(actual.contains(expected.get(i)));
-    }
-
-    public void testRemoveAdjacencyOfSquares(){
-
     }
 }
 
@@ -138,5 +150,15 @@ public class BoardTest extends ApplicationTestCase<Application>{
       33  31 | 32
       24  22 | 23
       12  13   14
+
+
+  79  80
+  70  71
+
+
+
+75  76  77
+66  67  68
+
  */
 

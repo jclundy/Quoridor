@@ -58,6 +58,10 @@ public class Board {
     }
 
     public void placeWall(int squareNum, boolean isVertical){
+        if(getCol(squareNum) == 8)
+            squareNum --;
+        if(getRow(squareNum) == 8)
+            squareNum -=9;
         Square square = squares[squareNum];
         if(!square.hasWall){
             square.hasWall = true;
@@ -66,6 +70,10 @@ public class Board {
             else
                 insertHorizontalWall(squareNum);
         }
+    }
+
+    public int getOccupierAtSquare(int squareNum){
+         return squares[squareNum].occupierID;
     }
 
     private void insertHorizontalWall(int squareNum){
@@ -93,6 +101,30 @@ public class Board {
         Square secondSquare = squares[second];
         firstSquare.removeFromAdjacencySet(second);
         secondSquare.removeFromAdjacencySet(first);
+    }
+
+    public static int getRow(int squareNum){
+        return squareNum/9;
+    }
+    public static int getCol(int squareNum){
+        return squareNum % 9;
+    }
+    public static int getSquareNum(int col, int row){
+
+        return row*9 + col;
+    }
+    public static boolean isValidRow(int index){
+        int row = getRow(index);
+        return row >= 0 && row < 9;
+    }
+
+    public static boolean isValidColumn(int index){
+        int col = getCol(index);
+        return col >= 0 && col < 9;
+    }
+
+    public static boolean squareAreAdjacent(int first, int second){
+        return false;
     }
 
 }
