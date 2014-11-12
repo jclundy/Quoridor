@@ -1,22 +1,23 @@
 package com.games.jclundy.quoridor;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
+
+import com.games.jclundy.quoridor.board.BoardFragment;
 
 
 public class QuoridorActivity extends Activity {
-    public GridView boardGrid;
+
+    private BoardFragment boardFrag;
+    private int currentPlayerImg = R.drawable.singlewall;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quoridor);
-        boardGrid = (GridView) findViewById(R.id.gridview);
-        boardGrid.setAdapter(new BoardAdapter(this));
-//        boardGrid.setBackgroundColor(Color.BLUE);
+        boardFrag = (BoardFragment) getFragmentManager().findFragmentById(R.id.boardFragment);
     }
 
 
