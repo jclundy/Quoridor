@@ -66,7 +66,7 @@ public class SquareImageView extends ImageView {
 
     public void setPiece(int resId) {
         Drawable[] layers = new Drawable[2];
-        layers[0] = getResources().getDrawable(R.drawable.opentile);
+        layers[0] = getResources().getDrawable(backgroundID);
         layers[1] = getResources().getDrawable(R.drawable.pawn);
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         setImageDrawable(layerDrawable);
