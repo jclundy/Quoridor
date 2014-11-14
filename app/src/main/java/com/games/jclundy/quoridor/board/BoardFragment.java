@@ -12,31 +12,39 @@ import android.widget.Button;
 
 import com.games.jclundy.quoridor.R;
 
+import java.util.HashMap;
+
 public class BoardFragment extends Fragment implements View.OnTouchListener{
     private SquaresTableView squaresTable;
-    private int currentPlayerImg = R.drawable.pawn;
     private int count;
     private Button up;
     private Button down;
     private Button left;
     private Button right;
-    private View.OnClickListener buttonListener;
+    private HashMap<Integer, Integer> playerTurns;
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_board, container, true);
         squaresTable = (SquaresTableView) v.findViewById(R.id.squaresTable);
         squaresTable.setOnTouchListener(this);
         createBoard();
-//        squaresTable.setCurrentPlayer(currentPlayerImg);
         up = (Button) v.findViewById(R.id.up);
         down = (Button) v.findViewById(R.id.down);
         left = (Button) v.findViewById(R.id.left);
         right = (Button) v.findViewById(R.id.right);
+
         View.OnClickListener listener = buttonListener();
         up.setOnClickListener(listener);
         down.setOnClickListener(listener);
         right.setOnClickListener(listener);
         left.setOnClickListener(listener);
+
+        playerTurns = new HashMap<Integer, Integer>();
+        playerTurns.put(1, R.drawable.blackpawn);
+        playerTurns.put(2, R.drawable.bluepawn);
+        playerTurns.put(3, R.drawable.whitepawn);
 
         count = 0;
         this.setRetainInstance(true);
@@ -50,14 +58,10 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
         int action = event.getAction();
         if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE) {
                 squaresTable.placeWall(x, y, true);
+                count ++;
         }
 
         return false;
-    }
-
-    public void setCurrentPlayer(int id) {
-        this.currentPlayerImg = id;
-//        squaresTable.setCurrentPlayer(currentPlayerImg);
     }
 
     public void clearBoard() {
@@ -80,22 +84,13 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
         int [] vals = squaresTable.disposeSquares(500, 500, squareSize);
     }
 
-    private void setButtonListener(Button button) {
-        button.setOnClickListener(this.buttonListener);
-    }
-
-    private void setButtonListeners(){
-        setButtonListener(up);
-        setButtonListener(down);
-        setButtonListener(right);
-        setButtonListener(left);
-    }
-
     private View.OnClickListener buttonListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int currentPosition = squaresTable.getCurrentPosition();
+                int currentPlayerNumber = count % 3 + 1;
+                int playerImg = playerTurns.get(currentPlayerNumber);
+                int currentPosition = squaresTable.getPawnPosition(playerImg);
                 int newPosition = currentPosition;
                 switch (view.getId()) {
                     case R.id.up:
@@ -113,8 +108,10 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
                     default:
                         break;
                 }
-                if (newPosition >= 0 && newPosition < 81)
-                    squaresTable.movePawn(newPosition, currentPlayerImg);
+                if (newPosition >= 0 && newPosition < 81){
+                    squaresTable.movePawn(newPosition, playerImg);
+                    count ++;
+                }
             }
         };
     }
