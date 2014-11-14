@@ -96,4 +96,14 @@ public class Square {
     private boolean isValidCol(int col){
         return col >= 0 && col < GameRuleConstants.NUM_COLS;
     }
+
+    public boolean isEmpty()
+    {
+        return occupierID == GameRuleConstants.EMPTY;
+    }
+
+    public boolean isOccupied()
+    {
+        return !isEmpty();
+    }
 }

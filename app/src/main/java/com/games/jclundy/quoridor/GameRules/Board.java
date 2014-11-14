@@ -127,4 +127,22 @@ public class Board {
         return false;
     }
 
+    public boolean squaresAreConnected(int first, int second)
+    {
+        Square fromSquare = squares[first];
+        return fromSquare.isInAdjacencySet(second);
+    }
+
+    public void transportPiece(int playerID, int toSquareNum)
+    {
+        int fromSquareNum = getPlayerPosition(playerID);
+        Square fromSquare = squares[fromSquareNum];
+        Square toSquare = squares[toSquareNum];
+        if(toSquare.isEmpty()){
+            fromSquare.removePiece();
+            toSquare.placePiece(playerID);
+            playerPositions[playerID] = toSquareNum;
+        }
+    }
+
 }

@@ -1,16 +1,15 @@
 package com.games.jclundy.quoridor.GameRules;
 
-/**
- * Created by devfloater65 on 10/29/14.
- */
 public class Session {
 
     protected int numPlayers;
     protected Board board;
     protected Player[] playerList;
     private int currentPlayerID;
+    private int moveCount;
 
     public Session(int numberOfPlayers){
+        moveCount = 0;
         numPlayers = (numberOfPlayers >= 2 && numberOfPlayers <= 4)? numberOfPlayers : 2;
         board = new Board(numPlayers);
         initializePlayers();
@@ -25,12 +24,39 @@ public class Session {
         }
     }
 
-    public int getMoveStatus(int playerID, Move move){
-        return -1;
+    public boolean isMoveValid(int toSquare){
+        if (toSquare > 80 || toSquare < 0)
+            return false;
+        int currentSquare = board.getPlayerPosition(currentPlayerID);
+        return isTileOpen(toSquare) && isTileConnected(currentSquare, toSquare)
+                && isNotMovingIntoEdge(currentSquare, toSquare);
     }
 
-    public boolean isMoveValid(){
-        return false;
+    public int getMoveCount(){
+        return moveCount;
+    }
+    public int getCurrentPlayerID(){
+        return currentPlayerID;
+    }
+    private boolean isTileOpen(int squareNum) {
+        return board.getOccupierAtSquare(squareNum) == GameRuleConstants.EMPTY;
+    }
+
+    private boolean isTileConnected(int fromSquare, int toSquare) {
+        return board.squaresAreConnected(fromSquare, toSquare);
+    }
+
+    private boolean isNotMovingIntoEdge(int fromSquare, int toSquare) {
+        int fromCol = board.getCol(fromSquare);
+        int fromRow = board.getRow(fromSquare);
+
+        int toCol = board.getCol(toSquare);
+        int toRow = board.getRow(toSquare);
+
+        boolean isValidColumn = Math.abs(fromCol - toCol) <= 1;
+        boolean isValidRow = Math.abs(fromRow - toRow) <= 1;
+
+        return isValidColumn && isValidRow;
     }
 
     boolean isTurnToMove(int playerID){
@@ -41,12 +67,18 @@ public class Session {
         return board.getPlayerPosition(playerID);
     }
 
-    void makeMove(int id, Move move){
+    void makeMove(Move move){
+        moveCount ++;
+        currentPlayerID = playerList[moveCount % playerList.length].id;
 
     }
 
-    void makeMove(int id, int squareNum){
-
+    void makeMove(int squareNum){
+        if(isMoveValid(squareNum)){
+            moveCount ++;
+            board.movePiece(currentPlayerID, squareNum);
+            currentPlayerID = playerList[moveCount % playerList.length].id;
+        }
     }
 
     boolean canJumpOver(int id, int squareNum){
