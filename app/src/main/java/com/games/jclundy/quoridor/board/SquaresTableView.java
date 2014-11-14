@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
-
 import com.games.jclundy.quoridor.R;
+import java.util.HashMap;
 
 /**
  * Created by devfloater65 on 11/9/14.
@@ -18,11 +18,10 @@ public class SquaresTableView extends ViewGroup {
     private int parentWidth;
     private int parentHeight;
     private int squareSize;
-    private int backgroundID;
     private int numRow;
     private int numCol;
 
-    private int currentPosition;
+    private HashMap<Integer, Integer> positionMap;
 
     public SquaresTableView(Context context){
         super(context);
@@ -40,6 +39,12 @@ public class SquaresTableView extends ViewGroup {
     }
 
     public int[] disposeSquares(int width, int height, int squareSize) {
+
+        positionMap = new HashMap<Integer, Integer>();
+        positionMap.put(R.drawable.blackpawn, 4);
+        positionMap.put(R.drawable.bluepawn, 76);
+        positionMap.put(R.drawable.whitepawn, 36);
+
         this.squareSize = squareSize;
         numRow = 9;
         numCol = 9;
@@ -50,8 +55,10 @@ public class SquaresTableView extends ViewGroup {
                 this.addView(squareImg);
             }
         }
-        currentPosition = 4;
-        placePawn(currentPosition, R.drawable.pawn);
+        placePawn(R.drawable.blackpawn);
+        placePawn(R.drawable.bluepawn);
+        placePawn(R.drawable.whitepawn)
+        ;
         return new int[]{numRow, numCol};
     }
 
@@ -79,7 +86,7 @@ public class SquaresTableView extends ViewGroup {
     }
 
     public void movePawn(int x, int y, int imgID) {
-        int oldPosition = currentPosition;
+        int oldPosition = getPawnPosition(imgID);
         SquareImageView oldSquare = (SquareImageView) getChildAt(oldPosition);
         int row = getRow(y);
         int col = getColumn(x);
@@ -88,13 +95,12 @@ public class SquaresTableView extends ViewGroup {
         if (newSquare != null) {
             newSquare.setPiece(imgID);
             oldSquare.removePiece();
-            currentPosition = newPosition;
-
+            positionMap.put(imgID, newPosition);
         }
     }
 
     public void movePawn (int position, int resID){
-        int oldPosition = currentPosition;
+        int oldPosition = getPawnPosition(resID);
         SquareImageView oldSquare = (SquareImageView) getChildAt(oldPosition);
         if(oldSquare != null)
             oldSquare.removePiece();
@@ -103,15 +109,15 @@ public class SquaresTableView extends ViewGroup {
         SquareImageView newSquare = (SquareImageView) getChildAt(newposition);
         if (newSquare != null) {
             newSquare.setPiece(resID);
-            currentPosition = newposition;
+            positionMap.put(resID, newposition);
         }
     }
 
-    public void placePawn(int pos, int imgID) {
+    public void placePawn(int imgID) {
+        int pos = getPawnPosition(imgID);
         SquareImageView newSquare = (SquareImageView) getChildAt(pos);
         if (newSquare != null) {
             newSquare.setPiece(imgID);
-            currentPosition = pos;
         }
     }
 
@@ -139,8 +145,8 @@ public class SquaresTableView extends ViewGroup {
         this.draw(c);
         return b;
     }
-
-    public int getCurrentPosition() {
-        return currentPosition;
+    public int getPawnPosition(int resID) {
+        return positionMap.get(resID);
     }
+
 }
