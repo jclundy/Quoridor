@@ -24,7 +24,7 @@ public class SquareImageView extends ImageView {
         this.context = context;
         this.row = row;
         this.col = col;
-        backgroundID = R.drawable.opentile;
+        backgroundID = R.drawable.yellowsquare;
         Drawable d = getResources().getDrawable(backgroundID);
         setImageDrawable(d);
         xSize = this.getWidth();
@@ -73,7 +73,7 @@ public class SquareImageView extends ImageView {
         pieceID = resId;
     }
     public void reset() {
-        backgroundID = R.drawable.opentile;
+        backgroundID = R.drawable.yellowsquare;
         Drawable d = getResources().getDrawable(backgroundID);
         setImageDrawable(d);
     }
@@ -84,7 +84,7 @@ public class SquareImageView extends ImageView {
         pieceID = -1;
     }
 
-    public void changeBackground(int resID) {
+    public void placeWall(int resID) {
         backgroundID = resID;
         Drawable backgroundImg = getResources().getDrawable(backgroundID);
 

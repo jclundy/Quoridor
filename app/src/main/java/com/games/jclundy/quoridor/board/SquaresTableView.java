@@ -41,9 +41,10 @@ public class SquaresTableView extends ViewGroup {
     public int[] disposeSquares(int width, int height, int squareSize) {
 
         positionMap = new HashMap<Integer, Integer>();
-        positionMap.put(R.drawable.blackpawn, 4);
-        positionMap.put(R.drawable.bluepawn, 76);
-        positionMap.put(R.drawable.whitepawn, 36);
+        positionMap.put(R.drawable.bluecircle, 4);
+        positionMap.put(R.drawable.orangecircle, 76);
+        positionMap.put(R.drawable.greencircle, 36);
+        positionMap.put(R.drawable.redcircle, 44);
 
         this.squareSize = squareSize;
         numRow = 9;
@@ -55,10 +56,11 @@ public class SquaresTableView extends ViewGroup {
                 this.addView(squareImg);
             }
         }
-        placePawn(R.drawable.blackpawn);
-        placePawn(R.drawable.bluepawn);
-        placePawn(R.drawable.whitepawn)
-        ;
+        placePawn(R.drawable.bluecircle);
+        placePawn(R.drawable.orangecircle);
+        placePawn(R.drawable.greencircle);
+        placePawn(R.drawable.redcircle);
+
         return new int[]{numRow, numCol};
     }
 
@@ -127,7 +129,7 @@ public class SquaresTableView extends ViewGroup {
         int newPosition = col + row * numCol;
         SquareImageView newSquare = (SquareImageView) getChildAt(newPosition);
         if (newSquare != null) {
-            newSquare.changeBackground(R.drawable.singlewall);
+            newSquare.placeWall(R.drawable.top_wall);
         }
     }
 
