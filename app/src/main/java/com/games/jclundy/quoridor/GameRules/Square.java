@@ -9,6 +9,9 @@ public class Square {
     int row;
     int col;
     boolean hasWall;
+    boolean canPlaceVerticalWall;
+    boolean canPlaceHorizontalWall;
+
     List<Integer> adjacencySet;
 
     public Square(int number){
@@ -18,6 +21,8 @@ public class Square {
         row = getRow(number);
         col = getCol(number);
         initializeAdjacencySet();
+        canPlaceHorizontalWall = true;
+        canPlaceVerticalWall = true;
     }
     public void initializeAdjacencySet() {
         adjacencySet = new ArrayList<Integer>();

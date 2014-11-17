@@ -73,26 +73,17 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertEquals(GameRuleConstants.PLAYER_2, session.getCurrentPlayerID());
     }
 
-    private void assertPlayerPositionIsUpdated()
-    {
-
-    }
-
-    private void assertMoveCountIsUpdated()
-    {
-        Session session = new Session(2);
-    }
-
-    private void assertCurrentPlayerIsUpdated()
-    {
-
-    }
-
     private void assertOnlyMoveWhenValid()
     {
 
     }
-//
+
+    public void testPlaceWall()
+    {
+//        Session session = new Session(2);
+//        session.placeWall(67, )
+    }
+
 //    public void testIsTurnToMove(){
 //        Session session = new Session(2);
 //        int id1 = session.playerList[0].id;

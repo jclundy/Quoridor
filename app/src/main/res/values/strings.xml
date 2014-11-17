@@ -16,4 +16,6 @@
     <string name="left">Left</string>
     <string name="right">Right</string>
 
+    <string name="Vertical">Vertical</string>
+    <string name="Horizontal">Horizontal</string>
 </resources>

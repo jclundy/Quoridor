@@ -58,13 +58,8 @@ public class Board {
     }
 
     public void placeWall(int squareNum, boolean isVertical){
-        if(getCol(squareNum) == 8)
-            squareNum --;
-        if(getRow(squareNum) == 8)
-            squareNum -=9;
         Square square = squares[squareNum];
         if(!square.hasWall){
-            square.hasWall = true;
             if(isVertical)
                 insertVerticalWall(squareNum);
             else
@@ -72,14 +67,45 @@ public class Board {
         }
     }
 
+    protected boolean canPlaceWall(int squareNum, boolean isVertical)
+    {
+        if(isValidNumber(squareNum)){
+            Square square = squares[squareNum];
+            boolean doesNotHaveWall = !square.hasWall;
+            boolean notBlocked;
+            if(isVertical)
+                notBlocked = square.canPlaceVerticalWall;
+            else
+                notBlocked = square.canPlaceHorizontalWall;
+
+            return doesNotHaveWall && notBlocked;
+        }
+        return false;
+    }
+
     public int getOccupierAtSquare(int squareNum){
          return squares[squareNum].occupierID;
     }
 
     private void insertHorizontalWall(int squareNum){
+        int right = squareNum + 1;
         int above = squareNum + 9;
         int aboveRight = squareNum + 10;
-        int right = squareNum + 1;
+
+        Square first = squares[squareNum];
+        first.hasWall = true;
+        first.canPlaceVerticalWall = false;
+        first.canPlaceHorizontalWall = false;
+
+        Square second = squares[right];
+        second.canPlaceHorizontalWall = false;
+
+        if(getCol(squareNum) > 0){
+            int left = squareNum - 1;
+            Square leftSquare= squares[left];
+            leftSquare.canPlaceHorizontalWall = false;
+        }
+
         removeAdjacencyOfSquares(squareNum, above);
         removeAdjacencyOfSquares(squareNum, aboveRight);
         removeAdjacencyOfSquares(right, above);
@@ -90,6 +116,21 @@ public class Board {
         int above = squareNum + 9;
         int aboveRight = squareNum + 10;
         int right = squareNum + 1;
+
+        Square first = squares[squareNum];
+        first.hasWall = true;
+        first.canPlaceVerticalWall = false;
+        first.canPlaceHorizontalWall = false;
+
+        Square aboveSquare = squares[above];
+        aboveSquare.canPlaceVerticalWall = false;
+
+        if(getRow(squareNum) > 0){
+            int below = squareNum - 9;
+            Square belowSquare = squares[squareNum];
+            belowSquare.canPlaceVerticalWall = false;
+        }
+
         removeAdjacencyOfSquares(squareNum, right);
         removeAdjacencyOfSquares(squareNum, aboveRight);
         removeAdjacencyOfSquares(above, right);
@@ -143,6 +184,19 @@ public class Board {
             toSquare.placePiece(playerID);
             playerPositions[playerID] = toSquareNum;
         }
+    }
+
+    public static int getValidSquareForWall(int squareNum)
+    {
+        int validNum = squareNum;
+        if(getCol(squareNum) == 8)
+            validNum --;
+        if(getRow(squareNum) == 8)
+            validNum -=9;
+        return validNum;
+    }
+    public static boolean isValidNumber(int number){
+        return number < 80 && number >= 0;
     }
 
 }

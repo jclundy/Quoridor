@@ -11,7 +11,6 @@ import com.games.jclundy.quoridor.board.BoardFragment;
 public class QuoridorActivity extends Activity {
 
     private BoardFragment boardFrag;
-    private int currentPlayerImg = R.drawable.singlewall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

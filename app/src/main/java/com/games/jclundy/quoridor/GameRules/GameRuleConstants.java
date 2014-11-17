@@ -18,7 +18,7 @@ public class GameRuleConstants {
     static final int PLAYER_2 = 1;
     static final int PLAYER_3 = 2;
     static final int PLAYER_4 = 3;
-    static final int PLAYER_IDS[] = {PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4};
+    public static final int PLAYER_IDS[] = {PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4};
 
     static final int START_POSITIONS[] = {4, 76, 36, 44};
 

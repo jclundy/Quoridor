@@ -127,4 +127,14 @@ public class SquareTest extends ApplicationTestCase<Application> {
         square.removePiece();
         assertEquals(GameRuleConstants.EMPTY, square.occupierID);
     }
+
+    public void testIsEmpty()
+    {
+        assertFalse(true);
+    }
+
+    public void testIsOccupied()
+    {
+        assertFalse(true);
+    }
 }

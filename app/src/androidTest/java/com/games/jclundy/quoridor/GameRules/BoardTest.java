@@ -132,6 +132,20 @@ public class BoardTest extends ApplicationTestCase<Application>{
         for(int i = 0; i < actual.size() && i < expected.size(); i++)
             assertTrue(actual.contains(expected.get(i)));
     }
+
+    public void testSquaresAreConnected()
+    {
+        assertTrue(false);
+    }
+
+    public void testTransportPiece()
+    {
+        assertTrue(false);
+    }
+
+    public void testCanPlaceWall(){
+        assertFalse(true);
+    }
 }
 
 /*

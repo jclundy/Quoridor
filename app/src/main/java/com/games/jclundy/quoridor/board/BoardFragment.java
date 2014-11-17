@@ -8,7 +8,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.ToggleButton;
 
+import com.games.jclundy.quoridor.GameRules.Board;
 import com.games.jclundy.quoridor.GameRules.GameRuleConstants;
 import com.games.jclundy.quoridor.GameRules.Session;
 import com.games.jclundy.quoridor.R;
@@ -23,6 +27,7 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
     private Button right;
     private HashMap<Integer, Integer> playerTurns;
     private Session session;
+    private Switch toggle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +55,7 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
         playerTurns.put(GameRuleConstants.PLAYER_IDS[2], R.drawable.greencircle);
         playerTurns.put(GameRuleConstants.PLAYER_IDS[3], R.drawable.redcircle);
 
+        toggle = (Switch) v.findViewById(R.id.toggle);
         this.setRetainInstance(true);
         return v;
     }
@@ -60,7 +66,13 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
         int y = (int) event.getY();
         int action = event.getAction();
         if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE) {
-            squaresTable.placeWall(x, y, true);
+            boolean isVertical = toggle.isChecked();
+            int position = squaresTable.getPosition(x, y);
+            position = Board.getValidSquareForWall(position);
+            if(session.canPlaceWall(position, isVertical)){
+                session.placeWall(position, isVertical);
+                squaresTable.placeWall(position, isVertical);
+            }
             return true;
         }
 

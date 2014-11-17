@@ -38,6 +38,11 @@ public class Session {
     public int getCurrentPlayerID(){
         return currentPlayerID;
     }
+
+    public int getCurrentPlayerPosition() {
+        return board.getPlayerPosition(currentPlayerID);
+    }
+
     private boolean isTileOpen(int squareNum) {
         return board.getOccupierAtSquare(squareNum) == GameRuleConstants.EMPTY;
     }
@@ -63,23 +68,33 @@ public class Session {
         return playerID == currentPlayerID;
     }
 
-    int getPlayerPosition(int playerID){
+    public int getPlayerPosition(int playerID){
         return board.getPlayerPosition(playerID);
     }
 
-    void makeMove(Move move){
-        moveCount ++;
-        currentPlayerID = playerList[moveCount % playerList.length].id;
-
-    }
-
-    void makeMove(int squareNum){
+    public void makeMove(int squareNum){
         if(isMoveValid(squareNum)){
             moveCount ++;
             board.movePiece(currentPlayerID, squareNum);
             currentPlayerID = playerList[moveCount % playerList.length].id;
         }
     }
+
+    public void placeWall(int squareNum, boolean isVertical)
+    {
+        if(board.canPlaceWall(squareNum, isVertical))
+        {
+            board.placeWall(squareNum, isVertical);
+            moveCount ++;
+            currentPlayerID = playerList[moveCount % playerList.length].id;
+        }
+    }
+
+    public boolean canPlaceWall(int squareNum, boolean isVertical)
+    {
+        return board.canPlaceWall(squareNum, isVertical);
+    }
+
 
     boolean canJumpOver(int id, int squareNum){
         //squareNum is 2 rows XOR 2 columns away

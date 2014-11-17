@@ -3,8 +3,11 @@ package com.games.jclundy.quoridor.board;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+
+import com.games.jclundy.quoridor.GameRules.Square;
 import com.games.jclundy.quoridor.R;
 import java.util.HashMap;
 
@@ -123,13 +126,21 @@ public class SquaresTableView extends ViewGroup {
         }
     }
 
-    public void placeWall(int x, int y, boolean isVertical) {
-        int row = getRow(y);
-        int col = getColumn(x);
-        int newPosition = col + row * numCol;
-        SquareImageView newSquare = (SquareImageView) getChildAt(newPosition);
-        if (newSquare != null) {
-            newSquare.placeWall(R.drawable.top_wall);
+    public void placeWall(int newPosition, boolean isVertical) {
+        SquareImageView firstSquare = (SquareImageView) getChildAt(newPosition);
+        SquareImageView secondSquare;
+        int resID;
+        if(isVertical){
+            resID = R.drawable.side_wall;
+            secondSquare = (SquareImageView) getChildAt(newPosition + 9);
+        }
+        else{
+            resID = R.drawable.top_wall;
+            secondSquare = (SquareImageView) getChildAt(newPosition + 1);
+        }
+        if (firstSquare != null && secondSquare != null) {
+            firstSquare.placeWall(resID);
+            secondSquare.placeWall(resID);
         }
     }
 
@@ -151,4 +162,11 @@ public class SquaresTableView extends ViewGroup {
         return positionMap.get(resID);
     }
 
+    public int getPosition(int x, int y)
+    {
+        int row = getRow(y);
+        int col = getColumn(x);
+        int position = col + row * numCol;
+        return position;
+    }
 }

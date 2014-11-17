@@ -4,6 +4,6 @@
         android:drawable="@drawable/yellowsquare">
     </item>
     <item
-        android:drawable="@drawable/horizontal_black_line_bottom">
+        android:drawable="@drawable/vertical_black_line">
     </item>
 </layer-list>
