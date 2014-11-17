@@ -19,7 +19,7 @@ public class SquareImageView extends ImageView {
     private int xSize;
     private int ySize;
     private Context context;
-    private int backgroundID;
+    private LayerDrawable background;
     private int pieceID;
     private List<Integer> resourceIDs;
 
@@ -28,11 +28,9 @@ public class SquareImageView extends ImageView {
         this.context = context;
         this.row = row;
         this.col = col;
-        backgroundID = R.drawable.yellowsquare;
         resourceIDs = new ArrayList<Integer>();
-        resourceIDs.add(backgroundID);
-        Drawable d = getResources().getDrawable(backgroundID);
-        setImageDrawable(d);
+        updateBackground(R.drawable.yellowsquare);
+        setImageDrawable(background);
         xSize = this.getWidth();
         ySize = this.getHeight();
         pieceID = -1;
@@ -72,34 +70,25 @@ public class SquareImageView extends ImageView {
 
     public void setPiece(int resId) {
         Drawable[] layers = new Drawable[2];
-        layers[0] = getResources().getDrawable(backgroundID);
+        layers[0] = background;
         layers[1] = getResources().getDrawable(resId);
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         setImageDrawable(layerDrawable);
         pieceID = resId;
     }
     public void reset() {
-        backgroundID = R.drawable.yellowsquare;
-        pieceID = -1;
-        Drawable d = getResources().getDrawable(backgroundID);
-        setImageDrawable(d);
+        resourceIDs = new ArrayList<Integer>();
+        updateBackground(R.drawable.yellowsquare);
+        setImageDrawable(background);
     }
 
     public void removePiece() {
-        Drawable d = getResources().getDrawable(backgroundID);
-        setImageDrawable(d);
         pieceID = -1;
+        setImageDrawable(background);
     }
 
     public void placeWall(int resID) {
-        resourceIDs.add(resID);
-        int arraySize = resourceIDs.size();
-        Drawable[] imgLayers = new Drawable[arraySize];
-
-        for(int i = 0; i < arraySize; i++){
-            imgLayers[i] = getResources().getDrawable(resourceIDs.get(i));
-        }
-        LayerDrawable background = new LayerDrawable(imgLayers);
+        updateBackground(resID);
         if (pieceID != -1) {
             Drawable[] layers = new Drawable[2];
             layers[0] = background;
@@ -111,5 +100,16 @@ public class SquareImageView extends ImageView {
             setImageDrawable(background);
         }
 
+    }
+
+    private void updateBackground(int imgID){
+        resourceIDs.add(imgID);
+        int arraySize = resourceIDs.size();
+        Drawable[] imgLayers = new Drawable[arraySize];
+        for(int i = 0; i < arraySize; i++){
+            imgLayers[i] = getResources().getDrawable(resourceIDs.get(i));
+        }
+        LayerDrawable background = new LayerDrawable(imgLayers);
+        this.background = background;
     }
 }

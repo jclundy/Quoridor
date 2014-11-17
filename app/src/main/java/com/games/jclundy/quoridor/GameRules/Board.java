@@ -127,7 +127,7 @@ public class Board {
 
         if(getRow(squareNum) > 0){
             int below = squareNum - 9;
-            Square belowSquare = squares[squareNum];
+            Square belowSquare = squares[below];
             belowSquare.canPlaceVerticalWall = false;
         }
 

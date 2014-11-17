@@ -131,11 +131,11 @@ public class SquaresTableView extends ViewGroup {
         SquareImageView secondSquare;
         int resID;
         if(isVertical){
-            resID = R.drawable.side_wall;
+            resID = R.drawable.vertical_black_line;
             secondSquare = (SquareImageView) getChildAt(newPosition + 9);
         }
         else{
-            resID = R.drawable.top_wall;
+            resID = R.drawable.horizontal_black_line_bottom;
             secondSquare = (SquareImageView) getChildAt(newPosition + 1);
         }
         if (firstSquare != null && secondSquare != null) {
