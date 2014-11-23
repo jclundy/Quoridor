@@ -56,7 +56,7 @@ public class BoardFragment extends Fragment implements View.OnTouchListener{
         playerTurns.put(GameRuleConstants.PLAYER_IDS[3], R.drawable.redcircle);
 
         toggle = (Switch) v.findViewById(R.id.toggle);
-        this.setRetainInstance(true);
+        setRetainInstance(true);
         return v;
     }
 

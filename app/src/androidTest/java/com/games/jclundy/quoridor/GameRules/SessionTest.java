@@ -9,35 +9,36 @@ public class SessionTest extends ApplicationTestCase<Application> {
         super(Application.class);
     }
 
-    public void testInit(){
+    public void testInit() {
 
         verifyInitialization(2);
         verifyInitialization(3);
         verifyInitialization(4);
     }
 
-    private void verifyInitialization(int num){
+    private void verifyInitialization(int num) {
         Session session = new Session(num);
         assertTrue(session.isTurnToMove(0));
         assertEquals(num, session.numPlayers);
-        assertEquals(num, session.playerList.length);
-        for(int i = 0 ; i < session.playerList.length; i ++){
-            assertEquals(i, session.playerList[i].id);
-            assertEquals(GameRuleConstants.START_POSITIONS[i], session.playerList[i].getCurrentSquare());
+        assertEquals(num, session.playerDict.size());
+        for (int i = 0; i < session.playerDict.size(); i++) {
+            int id = GameRuleConstants.PLAYER_IDS[i];
+            assertEquals(i, session.playerDict.get(id).id);
+            assertEquals(GameRuleConstants.START_POSITIONS[i], session.playerDict.get(id).getCurrentSquare());
         }
     }
 
-    public void testIsMoveValid(){
+    public void testIsMoveValid() {
         assertMoveIntoOpenTile();
         assertMoveIntoOccupiedTile();
         assertMoveIntoEdge();
     }
 
-    private void assertMoveIntoOpenTile(){
+    private void assertMoveIntoOpenTile() {
         int startPosition = 4;
         Session session = new Session(2);
         assertTrue(session.isTurnToMove(GameRuleConstants.PLAYER_1));
-        assertEquals(GameRuleConstants.START_POSITIONS[0],session.getPlayerPosition(GameRuleConstants.PLAYER_1));
+        assertEquals(GameRuleConstants.START_POSITIONS[0], session.getPlayerPosition(GameRuleConstants.PLAYER_1));
         assertTrue(session.isMoveValid(startPosition + 9));
         assertTrue(session.isMoveValid(startPosition - 1));
         assertTrue(session.isMoveValid(startPosition + 1));
@@ -45,26 +46,25 @@ public class SessionTest extends ApplicationTestCase<Application> {
 
     }
 
-    private void assertMoveIntoWalledTile(){
+    private void assertMoveIntoWalledTile() {
 
     }
 
-    private void assertMoveIntoOccupiedTile(){
-        Session session =  new Session(2);
+    private void assertMoveIntoOccupiedTile() {
+        Session session = new Session(2);
         session.board.transportPiece(GameRuleConstants.PLAYER_2, 13);
         assertEquals(13, session.getPlayerPosition(GameRuleConstants.PLAYER_2));
         assertTrue(session.isTurnToMove(GameRuleConstants.PLAYER_1));
         assertFalse(session.isMoveValid(13));
     }
 
-    private void assertMoveIntoEdge(){
+    private void assertMoveIntoEdge() {
         Session session = new Session(2);
         session.board.transportPiece(GameRuleConstants.PLAYER_1, 8);
         assertFalse(session.isMoveValid(9));
     }
 
-    public void testMakeMove()
-    {
+    public void testMakeMove() {
         Session session = new Session(2);
         assertEquals(GameRuleConstants.PLAYER_1, session.getCurrentPlayerID());
         session.makeMove(13);
@@ -73,96 +73,143 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertEquals(GameRuleConstants.PLAYER_2, session.getCurrentPlayerID());
     }
 
-    private void assertOnlyMoveWhenValid()
-    {
+    private void assertOnlyMoveWhenValid() {
 
     }
 
-    public void testPlaceWall()
-    {
-//        Session session = new Session(2);
-//        session.placeWall(67, )
+    public void testPlaceWall() {
+
+        assertPlaceWallEmptyBoard();
+        assertCannotPlaceOverlappingWalls();
+        assertCurrentTurnUpdated();
+        assertPlayerChipCountsUpdated();
+        assertSessionChipCountUpdated();
     }
 
-//    public void testIsTurnToMove(){
-//        Session session = new Session(2);
-//        int id1 = session.playerList[0].id;
-//        int id2 = session.playerList[1].id;
-//
-//        assertTrue(session.isTurnToMove(id1));
-//        assertFalse(session.isTurnToMove(id2));
-//
-//        session.makeMove(13);
-//        assertFalse(session.isTurnToMove(id1));
-//        assertTrue(session.isTurnToMove(id2));
-//
-//        Move move2 = new Move(67);
-//        session.makeMove(move2);
-//        assertFalse(session.isTurnToMove(id2));
-//        assertTrue(session.isTurnToMove(id1));
-//
-//        session.makeMove(move2);
-//
-//        Move move3 = new Move(13, 52);
-//        session.makeMove(move3);
-//        assertFalse(session.isTurnToMove(id1));
-//        assertTrue(session.isTurnToMove(id2));
-//
-//        //can't place chip in same position twice
-//        session.makeMove(move2);
-//        assertTrue(session.isTurnToMove(id2));
-//        assertFalse(session.isTurnToMove(id1));
-//
-//        //can't move piece to same position
-//        session.makeMove(67);
-//        assertTrue(session.isTurnToMove(id2));
-//        assertFalse(session.isTurnToMove(id1));
-//
-//        //cam't move out of turn
-//        session.makeMove(22);
-//    }
-//
-//    public void testCanJumpOver(){
-//        assertTrue(false);
-//    }
-//
-//    public void testCanJumpDiagonally(){
-//        assertTrue(false);
-//    }
-//
-//    public void testGetMoveStatus(){
-//        assertTrue(false);
-//    }
-//
-//    public void testIsValidMove(){
-//        assertTrue(false);
-//    }
-//
-//    public void testMoveForward(){
-//        assertTrue(false);
-//    }
-//
-//    public void testMoveBackward(){
-//        assertTrue(false);
-//    }
-//
-//    public void testMoveLeft(){
-//        assertTrue(false);
-//    }
-//
-//    public void testMoveRight(){
-//        assertTrue(false);
-//    }
-//
-//    public void testJumpOver(){
-//        assertTrue(false);
-//    }
-//
-//    public void testMoveDiagonally(){
-//        assertTrue(false);
-//    }
-//
-//    public void testCheckForVictory(){
-//        assertTrue(false);
-//    }
+    private void assertPlaceWallEmptyBoard() {
+        Session session = new Session(2);
+        assertTrue(session.canPlaceWall(24, false));
+        assertTrue(session.canPlaceWall(24, true));
+    }
+
+    private void assertCannotPlaceOverlappingWalls() {
+        assertNoOverlappingVerticalWalls();
+        assertNoOverlappingHorizontalWalls();
+    }
+
+    private void assertNoOverlappingVerticalWalls() {
+        Session session = new Session(2);
+        assertTrue(session.canPlaceWall(24, false));
+        assertTrue(session.canPlaceWall(24, true));
+
+        session.placeWall(24, true);
+        //on the square
+        assertFalse(session.canPlaceWall(24, true));
+        assertFalse(session.canPlaceWall(24, false));
+
+        // right
+        assertTrue(session.canPlaceWall(25, false));
+        assertTrue(session.canPlaceWall(25, true));
+
+        //left
+        assertTrue(session.canPlaceWall(23, false));
+        assertTrue(session.canPlaceWall(23, true));
+
+        //above
+        assertFalse(session.canPlaceWall(33, true));
+        assertTrue(session.canPlaceWall(33, false));
+
+        //below
+        assertFalse(session.canPlaceWall(15, true));
+        assertTrue(session.canPlaceWall(15, false));
+    }
+
+    private void assertNoOverlappingHorizontalWalls() {
+        Session session = new Session(2);
+        assertTrue(session.canPlaceWall(24, false));
+        assertTrue(session.canPlaceWall(24, true));
+
+        session.placeWall(24, false);
+        //on the square
+        assertFalse(session.canPlaceWall(24, true));
+        assertFalse(session.canPlaceWall(24, false));
+
+        // right
+        assertFalse(session.canPlaceWall(25, false));
+        assertTrue(session.canPlaceWall(25, true));
+
+        //left
+        assertFalse(session.canPlaceWall(23, false));
+        assertTrue(session.canPlaceWall(23, true));
+
+        //above
+        assertTrue(session.canPlaceWall(33, true));
+        assertTrue(session.canPlaceWall(33, false));
+
+        //below
+        assertTrue(session.canPlaceWall(15, true));
+        assertTrue(session.canPlaceWall(15, false));
+    }
+
+    private void assertEdgeWallsPlacedCorrectly(){
+
+    }
+
+    private void assertCurrentTurnUpdated() {
+        Session session = new Session(4);
+        for (int i = 0; i < 8; i++){
+            assertEquals(GameRuleConstants.PLAYER_IDS[i % 4], session.getCurrentPlayerID());
+            session.placeWall(i, true);
+            assertEquals(GameRuleConstants.PLAYER_IDS[(i + 1) % 4], session.getCurrentPlayerID());
+        }
+    }
+
+    private void assertPlayerChipCountsUpdated() {
+        Session session = new Session(4);
+        int id = session.getCurrentPlayerID();
+        int numChips = session.playerDict.get(id).getChipsLeft();
+        assertEquals(5, numChips);
+        session.placeWall(24, false);
+        int newNumChips = session.playerDict.get(id).getChipsLeft();
+        assertEquals(4, newNumChips);
+    }
+
+    private void assertSessionChipCountUpdated() {
+        Session session = new Session(4);
+        int count = 0;
+        for (int row = 0; row < 3; row += 2) {
+            for (int col = 0; col < 6; col ++){
+                int square = Board.getSquareNum(col, row);
+                if(count < 20)
+                    assertTrue(session.canPlaceWall(square, true));
+                else
+                    assertFalse(session.canPlaceWall(square, true));
+                session.placeWall(square, true);
+                count ++;
+            }
+        }
+    }
+
+    private void assertAdjacencyUpdatedAfterPlacingWall(){
+
+    }
+
+    public void testPlayerHasWon() {
+        assertVictoryForRangeOfSquares(GameRuleConstants.PLAYER_1, 72, 80, 1);
+        assertVictoryForRangeOfSquares(GameRuleConstants.PLAYER_2, 0, 8, 1);
+        assertVictoryForRangeOfSquares(GameRuleConstants.PLAYER_3, 8, 80, 9);
+        assertVictoryForRangeOfSquares(GameRuleConstants.PLAYER_4, 0, 72, 9);
+    }
+
+    private void assertVictoryForRangeOfSquares(int id, int start, int end, int interval) {
+        for (int i = start; i <= end; i += interval) {
+            assertPlayerWin(id, i);
+        }
+    }
+
+    private void assertPlayerWin(int id, int position) {
+        Session session = new Session(4);
+        session.board.transportPiece(id, position);
+        assertTrue(session.playerHasWon(id));
+    }
 }

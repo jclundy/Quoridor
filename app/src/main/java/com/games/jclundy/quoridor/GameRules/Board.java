@@ -179,11 +179,9 @@ public class Board {
         int fromSquareNum = getPlayerPosition(playerID);
         Square fromSquare = squares[fromSquareNum];
         Square toSquare = squares[toSquareNum];
-        if(toSquare.isEmpty()){
-            fromSquare.removePiece();
-            toSquare.placePiece(playerID);
-            playerPositions[playerID] = toSquareNum;
-        }
+        fromSquare.removePiece();
+        toSquare.placePiece(playerID);
+        playerPositions[playerID] = toSquareNum;
     }
 
     public static int getValidSquareForWall(int squareNum)

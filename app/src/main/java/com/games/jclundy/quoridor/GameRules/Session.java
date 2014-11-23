@@ -1,10 +1,12 @@
 package com.games.jclundy.quoridor.GameRules;
 
+import java.util.HashMap;
+
 public class Session {
 
     protected int numPlayers;
     protected Board board;
-    protected Player[] playerList;
+    protected HashMap<Integer, Player> playerDict;
     private int currentPlayerID;
     private int moveCount;
 
@@ -13,14 +15,16 @@ public class Session {
         numPlayers = (numberOfPlayers >= 2 && numberOfPlayers <= 4)? numberOfPlayers : 2;
         board = new Board(numPlayers);
         initializePlayers();
-        currentPlayerID = playerList[0].id;
+        currentPlayerID = playerDict.get(GameRuleConstants.PLAYER_1).id;
     }
 
     private void initializePlayers(){
-        playerList = new Player[numPlayers];
+        playerDict = new HashMap<Integer, Player>(numPlayers);
         int numberOfChips = GameRuleConstants.TOTAL_WALL_NUM/numPlayers;
-        for(int i = 0; i < playerList.length; i++){
-            playerList[i] = new Player(i, GameRuleConstants.START_POSITIONS[i],numberOfChips);
+
+        for(int i = 0; i < numPlayers; i++){
+            Player player = new Player(i, GameRuleConstants.START_POSITIONS[i],numberOfChips);
+            playerDict.put(GameRuleConstants.PLAYER_IDS[i], player);
         }
     }
 
@@ -76,7 +80,7 @@ public class Session {
         if(isMoveValid(squareNum)){
             moveCount ++;
             board.movePiece(currentPlayerID, squareNum);
-            currentPlayerID = playerList[moveCount % playerList.length].id;
+            currentPlayerID = GameRuleConstants.PLAYER_IDS[moveCount % numPlayers];
         }
     }
 
@@ -86,15 +90,18 @@ public class Session {
         {
             board.placeWall(squareNum, isVertical);
             moveCount ++;
-            currentPlayerID = playerList[moveCount % playerList.length].id;
+            Player player = playerDict.get(currentPlayerID);
+            player.recordMove(squareNum, true);
+            playerDict.put(currentPlayerID, player);
+            currentPlayerID = GameRuleConstants.PLAYER_IDS[moveCount % numPlayers];
         }
     }
 
     public boolean canPlaceWall(int squareNum, boolean isVertical)
     {
-        return board.canPlaceWall(squareNum, isVertical);
+        int chipsLeft  = playerDict.get(currentPlayerID).getChipsLeft();
+        return board.canPlaceWall(squareNum, isVertical && chipsLeft > 0);
     }
-
 
     boolean canJumpOver(int id, int squareNum){
         //squareNum is 2 rows XOR 2 columns away
@@ -129,14 +136,13 @@ public class Session {
         //square Num is in a different row and different column
         //another player occupies the square in adjacent column XOR adjacent row
         //square occupied by above player is adjacent to squareNum
-
-        /*
-
-         __ __ [ ]
-        [ ][P][X]
-        [ ][ ][ ]
-
-         */
+//
+//
+//         __ __ [ ]
+//        [ ][P][X]
+//        [ ][ ][ ]
+//
+//
 
         int currentPosition = getPlayerPosition(id);
         int col = Board.getCol(currentPosition);
@@ -157,26 +163,21 @@ public class Session {
         return false;
     }
 
-    public void moveForward(int playerID){
+    public boolean playerHasWon(int playerID){
 
-    }
-
-    public void moveBackward(int playerID){
-
-    }
-
-    public void moveLeft(int playerID){
-
-    }
-
-    public void moveRight(int playerID){
-
-    }
-
-    public void jumpOver(int playerID, int toSquare){
-
-    }
-
-    public void moveDiagonally(int playerID, int toSquare){
+       int position = getPlayerPosition(playerID);
+       int column = Board.getCol(position);
+       int row = Board.getRow(position);
+       switch(playerID){
+           case GameRuleConstants.PLAYER_1:
+               return row == 8;
+           case GameRuleConstants.PLAYER_2:
+               return row == 0;
+           case GameRuleConstants.PLAYER_3:
+               return column == 8;
+           case GameRuleConstants.PLAYER_4:
+               return column == 0;
+       }
+        return false;
     }
 }
