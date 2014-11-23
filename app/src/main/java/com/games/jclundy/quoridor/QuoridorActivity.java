@@ -1,6 +1,7 @@
 package com.games.jclundy.quoridor;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,10 +16,17 @@ public class QuoridorActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quoridor);
-        boardFrag = (BoardFragment) getFragmentManager().findFragmentById(R.id.boardFragment);
-    }
+        if (savedInstanceState == null){
+            Intent previous = getIntent();
+            int numPlayers = previous.getIntExtra(getString(R.string.NUM_PLAYERS), 2);
 
+            Bundle bundle = new Bundle();
+            bundle.putInt(getString(R.string.NUM_PLAYERS), numPlayers);
+            boardFrag = new BoardFragment();
+            boardFrag.setArguments(bundle);
+        }
+        setContentView(R.layout.activity_quoridor);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
