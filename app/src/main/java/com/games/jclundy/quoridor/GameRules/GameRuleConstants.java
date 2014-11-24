@@ -20,7 +20,7 @@ public class GameRuleConstants {
     static final int PLAYER_4 = 3;
     public static final int PLAYER_IDS[] = {PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4};
 
-    static final int START_POSITIONS[] = {4, 76, 36, 44};
+    public static final int START_POSITIONS[] = {4, 76, 36, 44};
 
     static final String PLACE_WALL = "placeWall";
     static final String MOVE_PAWN = "movePawn";

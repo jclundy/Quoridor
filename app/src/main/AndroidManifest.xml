@@ -10,14 +10,14 @@
         <activity
             android:name=".QuoridorActivity"
             android:label="@string/title_activity_quoridor" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".StartMenuActivity"
             android:label="@string/title_activity_start_menu" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

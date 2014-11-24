@@ -1,13 +1,10 @@
 package com.games.jclundy.quoridor.board;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
-import com.games.jclundy.quoridor.GameRules.Square;
+import com.games.jclundy.quoridor.GameRules.GameRuleConstants;
 import com.games.jclundy.quoridor.R;
 import java.util.HashMap;
 
@@ -17,7 +14,6 @@ import java.util.HashMap;
 public class SquaresTableView extends ViewGroup {
 
     private Context context;
-
     private int parentWidth;
     private int parentHeight;
     private int squareSize;
@@ -41,30 +37,32 @@ public class SquaresTableView extends ViewGroup {
         this.context = context;
     }
 
-    public int[] disposeSquares(int width, int height, int squareSize) {
-
-        positionMap = new HashMap<Integer, Integer>();
-        positionMap.put(R.drawable.bluecircle, 4);
-        positionMap.put(R.drawable.orangecircle, 76);
-        positionMap.put(R.drawable.greencircle, 36);
-        positionMap.put(R.drawable.redcircle, 44);
+    public void disposeSquares(int width, int height, int squareSize, int numPlayers) {
 
         this.squareSize = squareSize;
         numRow = 9;
         numCol = 9;
-
         for (int row = 0; row < numRow; row ++) {
             for (int col = 0; col < numCol; col ++) {
                 SquareImageView squareImg = new SquareImageView(getContext(), row, col);
                 this.addView(squareImg);
             }
         }
-        placePawn(R.drawable.bluecircle);
-        placePawn(R.drawable.orangecircle);
-        placePawn(R.drawable.greencircle);
-        placePawn(R.drawable.redcircle);
+        positionMap = new HashMap<Integer, Integer>();
 
-        return new int[]{numRow, numCol};
+        int [] drawables = new int[] {R.drawable.bluecircle,
+                                    R.drawable.orangecircle,
+                                    R.drawable.greencircle,
+                                    R.drawable.redcircle};
+
+        for(int i = 0; i < numPlayers; i++) {
+            positionMap.put(drawables[i], GameRuleConstants.START_POSITIONS[i]);
+            placePawn(drawables[i]);
+        }
+
+        SquareImageView highlighted = (SquareImageView) getChildAt(GameRuleConstants.START_POSITIONS[0]);
+        highlighted.highlightPiece();
+
     }
 
     @Override
@@ -90,31 +88,16 @@ public class SquaresTableView extends ViewGroup {
         }
     }
 
-    public void movePawn(int x, int y, int imgID) {
-        int oldPosition = getPawnPosition(imgID);
-        SquareImageView oldSquare = (SquareImageView) getChildAt(oldPosition);
-        int row = getRow(y);
-        int col = getColumn(x);
-        int newPosition = col + row * numCol;
-        SquareImageView newSquare = (SquareImageView) getChildAt(newPosition);
-        if (newSquare != null) {
-            newSquare.setPiece(imgID);
-            oldSquare.removePiece();
-            positionMap.put(imgID, newPosition);
-        }
-    }
-
-    public void movePawn (int position, int resID){
+    public void movePawn (int newPosition, int resID){
         int oldPosition = getPawnPosition(resID);
         SquareImageView oldSquare = (SquareImageView) getChildAt(oldPosition);
         if(oldSquare != null)
+            oldSquare.updateBackgroundToDefault();
             oldSquare.removePiece();
-
-        int newposition = position;
-        SquareImageView newSquare = (SquareImageView) getChildAt(newposition);
+        SquareImageView newSquare = (SquareImageView) getChildAt(newPosition);
         if (newSquare != null) {
             newSquare.setPiece(resID);
-            positionMap.put(resID, newposition);
+            positionMap.put(resID, newPosition);
         }
     }
 
@@ -144,6 +127,16 @@ public class SquaresTableView extends ViewGroup {
         }
     }
 
+    public void highlightSquare(int position) {
+        SquareImageView square = (SquareImageView) getChildAt(position);
+        square.highlightPiece();
+    }
+
+    public void unHighlightSquare(int position) {
+        SquareImageView square = (SquareImageView) getChildAt(position);
+        square.unHighlightPiece();
+    }
+
     public int getRow(int y) {
         return (int) Math.ceil(y / squareSize);
     }
@@ -152,12 +145,6 @@ public class SquaresTableView extends ViewGroup {
         return (int) Math.ceil( x / squareSize);
     }
 
-    public Bitmap createBitmap() {
-        Bitmap b = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(b);
-        this.draw(c);
-        return b;
-    }
     public int getPawnPosition(int resID) {
         return positionMap.get(resID);
     }
@@ -166,7 +153,6 @@ public class SquaresTableView extends ViewGroup {
     {
         int row = getRow(y);
         int col = getColumn(x);
-        int position = col + row * numCol;
-        return position;
+        return  col + row * numCol;
     }
 }

@@ -69,13 +69,18 @@ public class SquareImageView extends ImageView {
     }
 
     public void setPiece(int resId) {
+       pieceID = resId;
+       drawPiece();
+    }
+
+    public void drawPiece() {
         Drawable[] layers = new Drawable[2];
         layers[0] = background;
-        layers[1] = getResources().getDrawable(resId);
+        layers[1] = getResources().getDrawable(pieceID);
         LayerDrawable layerDrawable = new LayerDrawable(layers);
         setImageDrawable(layerDrawable);
-        pieceID = resId;
     }
+
     public void reset() {
         resourceIDs = new ArrayList<Integer>();
         updateBackground(R.drawable.yellowsquare);
@@ -104,6 +109,10 @@ public class SquareImageView extends ImageView {
 
     private void updateBackground(int imgID){
         resourceIDs.add(imgID);
+        regenerateBackground();
+    }
+
+    private void regenerateBackground() {
         int arraySize = resourceIDs.size();
         Drawable[] imgLayers = new Drawable[arraySize];
         for(int i = 0; i < arraySize; i++){
@@ -111,5 +120,26 @@ public class SquareImageView extends ImageView {
         }
         LayerDrawable background = new LayerDrawable(imgLayers);
         this.background = background;
+    }
+
+
+    public void updateBackgroundToHighlighted(){
+        resourceIDs.set(0, R.drawable.purple_square);
+        regenerateBackground();
+    }
+
+    public void highlightPiece() {
+        updateBackgroundToHighlighted();
+        drawPiece();
+    }
+
+    public void updateBackgroundToDefault() {
+        resourceIDs.set(0, R.drawable.yellowsquare);
+        regenerateBackground();
+    }
+
+    public void unHighlightPiece() {
+        updateBackgroundToDefault();
+        drawPiece();
     }
 }
