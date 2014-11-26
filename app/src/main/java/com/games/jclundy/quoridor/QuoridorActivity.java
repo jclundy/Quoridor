@@ -2,6 +2,7 @@ package com.games.jclundy.quoridor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.games.jclundy.quoridor.GameRules.Board;
 import com.games.jclundy.quoridor.GameRules.GameRuleConstants;
@@ -204,5 +206,10 @@ public class QuoridorActivity extends Activity
     private void handleInvalidMove()
     {
         Log.d("INVALID MOVE", "Please redo move");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 }

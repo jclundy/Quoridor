@@ -9,7 +9,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".QuoridorActivity"
-            android:label="@string/title_activity_quoridor" >
+            android:label="@string/title_activity_quoridor"
+            android:configChanges="orientation|screenSize">
         </activity>
         <activity
             android:name=".StartMenuActivity"
