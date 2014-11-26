@@ -59,10 +59,6 @@ public class SquaresTableView extends ViewGroup {
             positionMap.put(drawables[i], GameRuleConstants.START_POSITIONS[i]);
             placePawn(drawables[i]);
         }
-
-        SquareImageView highlighted = (SquareImageView) getChildAt(GameRuleConstants.START_POSITIONS[0]);
-        highlighted.highlightPiece();
-
     }
 
     @Override

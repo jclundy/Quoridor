@@ -9,13 +9,21 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     tools:context="com.games.jclundy.quoridor.QuoridorActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin">
+    <TextView
+        android:id="@+id/gameStatusLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/app_name"
+        android:textAlignment="center"/>
+
     <com.games.jclundy.quoridor.board.SquaresTableView
         android:id="@+id/squaresTable"
-        android:layout_height="450dp"
-        android:layout_width="450dp"
-        android:layout_margin="5dp"
-        android:layout_marginBottom="0dp"/>
+        android:layout_height="350dp"
+        android:layout_width="350dp"/>
     <Switch
         android:layout_marginTop="0dp"
         android:id="@+id/toggle"
@@ -24,12 +32,13 @@
         android:background="@android:color/holo_purple"
         android:textOn="@string/Vertical"
         android:textOff="@string/Horizontal"
-        android:layout_gravity="top"/>
+        android:gravity="center"/>
 
     <LinearLayout
         android:layout_marginTop="0dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
         <Button
             android:id="@+id/up"
             android:layout_width="wrap_content"
@@ -59,7 +68,5 @@
             android:background="@android:color/holo_green_light"
             android:clickable="true"/>
     </LinearLayout>
-
 </LinearLayout>
-
 </ScrollView>

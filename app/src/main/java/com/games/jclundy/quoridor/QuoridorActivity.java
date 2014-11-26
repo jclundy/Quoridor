@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.games.jclundy.quoridor.GameRules.Board;
 import com.games.jclundy.quoridor.GameRules.GameRuleConstants;
@@ -29,9 +29,11 @@ public class QuoridorActivity extends Activity
     private Button left;
     private Button right;
     private HashMap<Integer, Integer> playerImageMap;
+    private HashMap<Integer, String> playerNameMap;
     private Session session;
     private Switch toggle;
     private int numPlayers;
+    private TextView gameStatusLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,6 +56,15 @@ public class QuoridorActivity extends Activity
         playerImageMap.put(GameRuleConstants.PLAYER_IDS[3], R.drawable.redcircle);
 
         toggle = (Switch) findViewById(R.id.toggle);
+
+        playerNameMap = new HashMap<Integer, String>();
+        playerNameMap.put(GameRuleConstants.PLAYER_IDS[0], "BLUE PLAYER");
+        playerNameMap.put(GameRuleConstants.PLAYER_IDS[1], "ORANGE PLAYER");
+        playerNameMap.put(GameRuleConstants.PLAYER_IDS[2], "ORANGE PLAYER");
+        playerNameMap.put(GameRuleConstants.PLAYER_IDS[3], "RED PLAYER");
+
+        gameStatusLabel = (TextView) findViewById(R.id.gameStatusLabel);
+        handleNextMove();
     }
 
     @Override
@@ -96,8 +107,7 @@ public class QuoridorActivity extends Activity
                         session.placeWall(position, isVertical);
                         squaresTable.placeWall(position, isVertical);
 
-                        int nextPlayerPosition = session.getCurrentPlayerPosition();
-                        squaresTable.highlightSquare(nextPlayerPosition);
+                        handleNextMove();
                     }
                     return true;
                 }
@@ -193,19 +203,24 @@ public class QuoridorActivity extends Activity
         squaresTable.highlightSquare(session.getPlayerPosition(winningPlayer));
         squaresTable.setOnTouchListener(null);
         setButtonsListener(null);
-        Log.d("VICTORY", "Game is Over");
+        String winningPlayerName = playerNameMap.get(winningPlayer);
+        String label = winningPlayerName + " WINS!  GAME OVER";
+        gameStatusLabel.setText(label);
     }
 
     private void handleNextMove()
     {
         int nextPlayerPosition = session.getCurrentPlayerPosition();
         squaresTable.highlightSquare(nextPlayerPosition);
-        Log.d("VALID MOVE", "Next player to move");
+        int nextPlayer = session.getCurrentPlayerID();
+        String nextPlayerName = playerNameMap.get(nextPlayer);
+        String labelText = nextPlayerName + " TO MOVE";
+        gameStatusLabel.setText(labelText);
     }
 
     private void handleInvalidMove()
     {
-        Log.d("INVALID MOVE", "Please redo move");
+        gameStatusLabel.setText("INVALID MOVE");
     }
 
     @Override
