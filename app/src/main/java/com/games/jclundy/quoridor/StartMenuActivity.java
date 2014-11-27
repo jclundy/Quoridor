@@ -19,6 +19,11 @@ public class StartMenuActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getIntent().getBooleanExtra("EXIT",false)){
+            finish();
+        }
+
         setContentView(R.layout.activity_start_menu);
 
         startButton = (Button) findViewById(R.id.startButton);

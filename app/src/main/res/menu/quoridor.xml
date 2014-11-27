@@ -1,8 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.games.jclundy.quoridor.QuoridorActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+    <item android:id="@+id/quit"
+        android:title="@string/quit"/>
+    <item android:id="@+id/restart"
+        android:title="@string/restart"/>
+    <item android:id="@+id/newGame"
+        android:title="@string/newGame"/>
 </menu>

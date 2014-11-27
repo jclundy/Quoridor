@@ -20,4 +20,7 @@
     <string name="noAI"> No AI </string>
     <string name="start"> Start </string>
     <string name="NUM_PLAYERS"> NUM_PLAYERS </string>
+    <string name="quit"> Quit </string>
+    <string name="restart"> Restart </string>
+    <string name="newGame"> New Game </string>
 </resources>

@@ -43,6 +43,11 @@ public class QuoridorActivity extends Activity
         Intent previous = getIntent();
         numPlayers = previous.getIntExtra(getString(R.string.NUM_PLAYERS), 2);
 
+        initializeGame();
+    }
+
+    private void initializeGame()
+    {
         createBoard();
         createButtons();
         setButtonsListener(buttonListener());
@@ -69,21 +74,34 @@ public class QuoridorActivity extends Activity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.quoridor, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id)
+        {
+            case R.id.quit:
+                quitApp();
+                return true;
+            case R.id.restart:
+                recreate();
+                return true;
+            case R.id.newGame:
+                finish();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void quitApp()
+    {
+        Intent intent = new Intent(QuoridorActivity.this, StartMenuActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
     }
 
     private View.OnTouchListener generateBoardListener()
