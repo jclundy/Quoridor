@@ -72,13 +72,15 @@ public class QuoridorActivity extends Activity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         getMenuInflater().inflate(R.menu.quoridor, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
         switch (id)
         {
@@ -126,6 +128,8 @@ public class QuoridorActivity extends Activity
 
                         handleNextMove();
                     }
+                    else
+                        handleInvalidMove();
                     return true;
                 }
                 return false;
