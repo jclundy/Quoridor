@@ -100,7 +100,7 @@ public class Session {
     public boolean canPlaceWall(int squareNum, boolean isVertical)
     {
         int chipsLeft  = playerDict.get(currentPlayerID).getChipsLeft();
-        return board.canPlaceWall(squareNum, isVertical && chipsLeft > 0);
+        return board.canPlaceWall(squareNum, isVertical)  && chipsLeft > 0;
     }
 
     boolean canJumpOver(int id, int squareNum){
