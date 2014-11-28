@@ -212,4 +212,122 @@ public class SessionTest extends ApplicationTestCase<Application> {
         session.board.transportPiece(id, position);
         assertTrue(session.playerHasWon(id));
     }
+
+    public void testPlayerCanJumpOver() {
+        assertCanJumpForward();
+        assertCanJumpBackward();
+        assertCanJumpLeft();
+        assertCanJumpRight();
+        assertCannotJumpOverLeftEdge();
+        assertCannotJumpOverRightEdge();
+    }
+
+    private void assertJump(boolean expected, int wallPosition, boolean isWallVertical,
+                                      int position1, int position2, int jumpToSquare)
+    {
+        Session session = new Session(2);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+        session.board.placeWall(wallPosition, isWallVertical);
+        assertEquals(expected, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
+    }
+
+    private void assertJump(boolean expected, int position1, int position2, int jumpToSquare)
+    {
+        Session session = new Session(2);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+        assertEquals(expected, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
+    }
+
+    private void assertJump(boolean expected, int position1, int position2, int position3, int jumpToSquare)
+    {
+        Session session = new Session(3);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+        session.board.transportPiece(GameRuleConstants.PLAYER_3, position3);
+        assertEquals(expected, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
+    }
+
+    private void assertCanJumpForward()
+    {
+        int position1 = 20;
+        int position2 = position1 + 9;
+        int jumpToSquare = position1 + 18;
+        assertJump(true, position1, position2, jumpToSquare);
+
+        assertJumpOverWall(false, position1, position2, jumpToSquare, position1);
+        assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
+        assertJumpOverWall(true, position1, position2, jumpToSquare, jumpToSquare);
+    }
+
+    private void assertCanJumpBackward()
+    {
+        int position1 = 20;
+        int position2 = position1 - 9;
+        int jumpToSquare = position1 - 18;
+        assertJump(true, position1, position2, jumpToSquare);
+
+        assertJumpOverWall(true, position1, position2, jumpToSquare, position1);
+        assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
+        assertJumpOverWall(false, position1, position2, jumpToSquare, jumpToSquare);
+    }
+
+    private void assertCanJumpLeft()
+    {
+        int position1 = 22;
+        int position2 = position1 - 1;
+        int jumpToSquare = position1 - 2;
+        assertJump(true, position1, position2, jumpToSquare);
+
+        assertJumpOverWall(true, position1, position2, jumpToSquare, position1);
+        assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
+        assertJumpOverWall(false, position1, position2, jumpToSquare, jumpToSquare);
+    }
+
+    private void assertCanJumpRight()
+    {
+        int position1 = 22;
+        int position2 = position1 + 1;
+        int jumpToSquare = position1 + 2;
+        assertJump(true, position1, position2, jumpToSquare);
+
+        assertJumpOverWall(false, position1, position2, jumpToSquare, position1);
+        assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
+        assertJumpOverWall(true, position1, position2, jumpToSquare, jumpToSquare);
+    }
+
+    private void assertJumpOverWall(boolean expected, int position1, int position2,
+                                          int jumpToSquare, int wallPosition){
+        boolean isVertical;
+        int diff = position1 - position2;
+
+        isVertical = (Math.abs(diff) == 1);
+        assertJump(expected, wallPosition, isVertical, position1, position2, jumpToSquare);
+
+    }
+
+    private void assertCannotJumpIntoPlayer(){
+
+    }
+
+    private void assertCannotJumpOverRightEdge(){
+        Session session = new Session(2);
+
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, 8);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, 7);
+
+        assertEquals(GameRuleConstants.PLAYER_1, session.getCurrentPlayerID());
+        assertFalse(session.canJumpOver(GameRuleConstants.PLAYER_1, 9));
+    }
+
+    private void assertCannotJumpOverLeftEdge(){
+        Session session = new Session(2);
+
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, 9);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, 10);
+
+        assertEquals(GameRuleConstants.PLAYER_1, session.getCurrentPlayerID());
+        assertFalse(session.canJumpOver(GameRuleConstants.PLAYER_1, 8));
+    }
 }

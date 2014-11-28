@@ -188,6 +188,12 @@ public class QuoridorActivity extends Activity
         };
     }
 
+    private boolean checkIfNeedsJumpOver(int fromSquare, int toSquare)
+    {
+        boolean squareIsOccupied = session.isSquareOccupied(toSquare);
+        return false;
+    }
+
     private void handleMove(int move)
     {
         int currentPlayer = session.getCurrentPlayerID();

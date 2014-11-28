@@ -119,16 +119,26 @@ public class Session {
         int colDiff = Math.abs(row - toRow);
         int rowDiff = Math.abs(col - toCol);
         int occupier;
-        if(colDiff == 1 && rowDiff == 0){
-            occupier = board.getOccupierAtSquare(Board.getSquareNum(toCol, row));
-            return occupier != GameRuleConstants.EMPTY && occupierOfToSquare == GameRuleConstants.EMPTY;
-        }
-        else if (colDiff == 0 && rowDiff == 1){
-            occupier = board.getOccupierAtSquare(Board.getSquareNum(col, toRow));
-            return occupier != GameRuleConstants.EMPTY && occupierOfToSquare == GameRuleConstants.EMPTY;
-        }
-        else
+        int square2;
+
+        if(colDiff + rowDiff != 2)
             return false;
+
+        if(colDiff == 2 && rowDiff == 0){
+            occupier = board.getOccupierAtSquare(Board.getSquareNum(toCol, row));
+            square2 = Board.getSquareNum(toCol, row);
+        }
+        else {
+            occupier = board.getOccupierAtSquare(Board.getSquareNum(col, toRow));
+            square2 = Board.getSquareNum(toCol, row);
+        }
+
+        boolean firstSquaresAreAdjacent = board.squaresAreConnected(currentPosition, square2);
+        boolean secondThirdSquaresAreAdjacent = board.squaresAreConnected(square2, squareNum);
+        boolean allThreeSquareConnected = firstSquaresAreAdjacent && secondThirdSquaresAreAdjacent;
+
+        return occupier != GameRuleConstants.EMPTY && occupierOfToSquare == GameRuleConstants.EMPTY && allThreeSquareConnected;
+
     }
 
     boolean canJumpDiagonally(int id, int squareNum){
@@ -179,5 +189,10 @@ public class Session {
                return column == 0;
        }
         return false;
+    }
+
+    public boolean isSquareOccupied(int square)
+    {
+        return board.getOccupierAtSquare(square) != GameRuleConstants.EMPTY;
     }
 }
