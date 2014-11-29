@@ -30,10 +30,10 @@ public class Session {
 
     public boolean isMoveValid(int toSquare)
     {
-        return isStepValid(toSquare) || canJumpOver(currentPlayerID, toSquare);
+        return canSlideTo(toSquare) || canJumpOver(currentPlayerID, toSquare);
     }
 
-    private boolean isStepValid(int toSquare)
+    private boolean canSlideTo(int toSquare)
     {
         if (toSquare > 80 || toSquare < 0)
             return false;
@@ -83,10 +83,12 @@ public class Session {
     }
 
     public void makeMove(int squareNum){
-        if(isMoveValid(squareNum)){
+        if(canJumpOver(currentPlayerID, squareNum))
+            board.jumpPiece(currentPlayerID, squareNum);
+        else if(canSlideTo(squareNum)){
             board.movePiece(currentPlayerID, squareNum);
-            updateCurrentPlayer();
         }
+        updateCurrentPlayer();
     }
 
     public void placeWall(int squareNum, boolean isVertical)
@@ -124,10 +126,6 @@ public class Session {
     public boolean canJumpOver(int id, int toSquare){
         int start = getPlayerPosition(id);
         return board.canJumpOver(start, toSquare);
-    }
-
-    boolean canJumpDiagonally(int id, int squareNum){
-        return false;
     }
 
     public boolean playerHasWon(int playerID){

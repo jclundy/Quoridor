@@ -167,31 +167,37 @@ public class QuoridorActivity extends Activity
             public void onClick(View view) {
                 int currentPlayerPosition = session.getCurrentPlayerPosition();
                 int newPosition = currentPlayerPosition;
+                int diff = 0;
                 switch (view.getId()) {
                     case R.id.up:
-                        newPosition -= 9;
+                        diff = -9;
                         break;
                     case R.id.down:
-                        newPosition += 9;
+                        diff = 9;
                         break;
                     case R.id.left:
-                        newPosition -= 1;
+                        diff = -1;
                         break;
                     case R.id.right:
-                        newPosition += 1;
+                        diff = 1;
                         break;
                     default:
                         break;
                 }
+                newPosition = currentPlayerPosition + diff;
+
+                if (needsJumpingOver(currentPlayerPosition, newPosition))
+                    newPosition += diff;
+
                 handleMove(newPosition);
             }
         };
     }
 
-    private boolean checkIfNeedsJumpOver(int fromSquare, int toSquare)
+    private boolean needsJumpingOver(int fromSquare, int toSquare)
     {
         boolean squareIsOccupied = session.isSquareOccupied(toSquare);
-        return false;
+        return squareIsOccupied;
     }
 
     private void handleMove(int move)

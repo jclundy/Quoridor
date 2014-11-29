@@ -341,7 +341,7 @@ public class SessionTest extends ApplicationTestCase<Application> {
         int jumpToSquare = position1 + 18;
         session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
         session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
-        
+
         assertEquals(position1, session.getCurrentPlayerPosition());
         assertEquals(position2, session.getPlayerPosition(GameRuleConstants.PLAYER_2));
 
