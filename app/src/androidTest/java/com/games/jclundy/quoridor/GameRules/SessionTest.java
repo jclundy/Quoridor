@@ -230,6 +230,7 @@ public class SessionTest extends ApplicationTestCase<Application> {
         session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
         session.board.placeWall(wallPosition, isWallVertical);
         assertEquals(expected, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
+        assertEquals(expected, session.isMoveValid(jumpToSquare));
     }
 
     private void assertJump(boolean expected, int position1, int position2, int jumpToSquare)
@@ -238,15 +239,8 @@ public class SessionTest extends ApplicationTestCase<Application> {
         session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
         session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
         assertEquals(expected, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
-    }
+        assertEquals(expected, session.isMoveValid(jumpToSquare));
 
-    private void assertJump(boolean expected, int position1, int position2, int position3, int jumpToSquare)
-    {
-        Session session = new Session(3);
-        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
-        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
-        session.board.transportPiece(GameRuleConstants.PLAYER_3, position3);
-        assertEquals(expected, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
     }
 
     private void assertCanJumpForward()
@@ -259,6 +253,7 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertJumpOverWall(false, position1, position2, jumpToSquare, position1);
         assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
         assertJumpOverWall(true, position1, position2, jumpToSquare, jumpToSquare);
+        assertCannotJumpIntoPlayer(position1, position2, jumpToSquare);
     }
 
     private void assertCanJumpBackward()
@@ -271,6 +266,7 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertJumpOverWall(true, position1, position2, jumpToSquare, position1);
         assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
         assertJumpOverWall(false, position1, position2, jumpToSquare, jumpToSquare);
+        assertCannotJumpIntoPlayer(position1, position2, jumpToSquare);
     }
 
     private void assertCanJumpLeft()
@@ -283,6 +279,7 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertJumpOverWall(true, position1, position2, jumpToSquare, position1);
         assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
         assertJumpOverWall(false, position1, position2, jumpToSquare, jumpToSquare);
+        assertCannotJumpIntoPlayer(position1, position2, jumpToSquare);
     }
 
     private void assertCanJumpRight()
@@ -295,6 +292,7 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertJumpOverWall(false, position1, position2, jumpToSquare, position1);
         assertJumpOverWall(false, position1, position2, jumpToSquare, position2);
         assertJumpOverWall(true, position1, position2, jumpToSquare, jumpToSquare);
+        assertCannotJumpIntoPlayer(position1, position2, jumpToSquare);
     }
 
     private void assertJumpOverWall(boolean expected, int position1, int position2,
@@ -307,8 +305,12 @@ public class SessionTest extends ApplicationTestCase<Application> {
 
     }
 
-    private void assertCannotJumpIntoPlayer(){
-
+    private void assertCannotJumpIntoPlayer(int position1, int position2, int jumpToSquare){
+        Session session = new Session(3);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+        session.board.transportPiece(GameRuleConstants.PLAYER_3, jumpToSquare);
+        assertEquals(false, session.canJumpOver(GameRuleConstants.PLAYER_1, jumpToSquare));
     }
 
     private void assertCannotJumpOverRightEdge(){
@@ -330,4 +332,25 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertEquals(GameRuleConstants.PLAYER_1, session.getCurrentPlayerID());
         assertFalse(session.canJumpOver(GameRuleConstants.PLAYER_1, 8));
     }
+
+    public void testJumpPiece()
+    {
+        Session session = new Session(2);
+        int position1 = 20;
+        int position2 = position1 + 9;
+        int jumpToSquare = position1 + 18;
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+        
+        assertEquals(position1, session.getCurrentPlayerPosition());
+        assertEquals(position2, session.getPlayerPosition(GameRuleConstants.PLAYER_2));
+
+        session.jumpToSquare(jumpToSquare);
+        assertEquals(jumpToSquare, session.getPlayerPosition(GameRuleConstants.PLAYER_1));
+
+        assertEquals(GameRuleConstants.PLAYER_2, session.getCurrentPlayerID());
+        assertEquals(position2, session.getPlayerPosition(session.getCurrentPlayerID()));
+
+    }
+
 }

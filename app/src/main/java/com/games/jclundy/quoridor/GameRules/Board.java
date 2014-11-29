@@ -50,11 +50,23 @@ public class Board {
         int fromSquareNum = getPlayerPosition(playerID);
         Square fromSquare = squares[fromSquareNum];
         if(fromSquare.isInAdjacencySet(toSquareNum)){
-            Square toSquare = squares[toSquareNum];
-            fromSquare.removePiece();
-            toSquare.placePiece(playerID);
-            playerPositions[playerID] = toSquareNum;
+            updatePlayerPosition(playerID, toSquareNum, fromSquareNum);
         }
+    }
+
+    private void updatePlayerPosition(int playerID, int toSquareNum, int fromSquareNum)
+    {
+        Square fromSquare = squares[fromSquareNum];
+        Square toSquare = squares[toSquareNum];
+        fromSquare.removePiece();
+        toSquare.placePiece(playerID);
+        playerPositions[playerID] = toSquareNum;
+    }
+
+    public void jumpPiece(int playerID, int toSquareNum) {
+        int fromSquareNum = getPlayerPosition(playerID);
+        if(canJumpOver(fromSquareNum, toSquareNum))
+            updatePlayerPosition(playerID, toSquareNum, fromSquareNum);
     }
 
     public void placeWall(int squareNum, boolean isVertical){
@@ -197,4 +209,50 @@ public class Board {
         return number < 80 && number >= 0;
     }
 
+    boolean canJumpOver(int start, int end)
+    {
+        boolean squaresAreRightDistance = checkDistance(start, end);
+
+        if (squaresAreRightDistance) {
+            int middle = getSquareBetween(start, end);
+            boolean squaresAreNotBlocked = squaresNotBlocked(start, middle, end);
+            boolean midContainsPlayer = !squareIsEmpty(middle);
+            boolean endSquareIsEmpty = squareIsEmpty(end);
+            return squaresAreNotBlocked && midContainsPlayer && endSquareIsEmpty;
+        }
+
+        return false;
+    }
+
+    private boolean checkDistance(int start, int end)
+    {
+        int startCol = getCol(start);
+        int startRow = getRow(start);
+
+        int endCol = getCol(end);
+        int endRow = getRow(end);
+
+        int colDiff = Math.abs(startCol - endCol);
+        int rowDiff = Math.abs(startRow - endRow);
+
+        return colDiff == 0 || rowDiff == 0 && colDiff == 2 || rowDiff == 2;
+    }
+
+    private int getSquareBetween(int start, int end)
+    {
+        int diff = end - start;
+        return start + diff/2;
+    }
+
+    private boolean squaresNotBlocked(int start, int middle, int end)
+    {
+        boolean startAndMidConnected = squaresAreConnected(start, middle);
+        boolean midAndEndConnected = squaresAreConnected(middle, end);
+        return startAndMidConnected && midAndEndConnected;
+    }
+
+    protected boolean squareIsEmpty(int squareNum)
+    {
+        return getOccupierAtSquare(squareNum) == GameRuleConstants.EMPTY;
+    }
 }

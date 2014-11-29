@@ -28,7 +28,13 @@ public class Session {
         }
     }
 
-    public boolean isMoveValid(int toSquare){
+    public boolean isMoveValid(int toSquare)
+    {
+        return isStepValid(toSquare) || canJumpOver(currentPlayerID, toSquare);
+    }
+
+    private boolean isStepValid(int toSquare)
+    {
         if (toSquare > 80 || toSquare < 0)
             return false;
         int currentSquare = board.getPlayerPosition(currentPlayerID);
@@ -78,9 +84,8 @@ public class Session {
 
     public void makeMove(int squareNum){
         if(isMoveValid(squareNum)){
-            moveCount ++;
             board.movePiece(currentPlayerID, squareNum);
-            currentPlayerID = GameRuleConstants.PLAYER_IDS[moveCount % numPlayers];
+            updateCurrentPlayer();
         }
     }
 
@@ -89,12 +94,17 @@ public class Session {
         if(board.canPlaceWall(squareNum, isVertical))
         {
             board.placeWall(squareNum, isVertical);
-            moveCount ++;
             Player player = playerDict.get(currentPlayerID);
             player.recordMove(squareNum, true);
             playerDict.put(currentPlayerID, player);
-            currentPlayerID = GameRuleConstants.PLAYER_IDS[moveCount % numPlayers];
+            updateCurrentPlayer();
         }
+    }
+
+    private void updateCurrentPlayer()
+    {
+        moveCount ++;
+        currentPlayerID = GameRuleConstants.PLAYER_IDS[moveCount % numPlayers];
     }
 
     public boolean canPlaceWall(int squareNum, boolean isVertical)
@@ -103,73 +113,20 @@ public class Session {
         return board.canPlaceWall(squareNum, isVertical)  && chipsLeft > 0;
     }
 
-    boolean canJumpOver(int id, int squareNum){
-        //squareNum is 2 rows XOR 2 columns away
-        //another player occupies an adjacent square
-        //the squareNum is adjacent to the player's occupying square
-
-        int currentPosition = getPlayerPosition(id);
-        int col = Board.getCol(currentPosition);
-        int row = Board.getRow(currentPosition);
-        int toCol = Board.getCol(squareNum);
-        int toRow = Board.getRow(squareNum);
-
-        int occupierOfToSquare = board.getOccupierAtSquare(squareNum);
-
-        int colDiff = Math.abs(row - toRow);
-        int rowDiff = Math.abs(col - toCol);
-        int occupier;
-        int square2;
-
-        if(colDiff + rowDiff != 2)
-            return false;
-
-        if(colDiff == 2 && rowDiff == 0){
-            occupier = board.getOccupierAtSquare(Board.getSquareNum(toCol, row));
-            square2 = Board.getSquareNum(toCol, row);
+    public void jumpToSquare(int toSquare)
+    {
+        if(canJumpOver(currentPlayerID, toSquare)){
+            board.jumpPiece(currentPlayerID, toSquare);
+            updateCurrentPlayer();
         }
-        else {
-            occupier = board.getOccupierAtSquare(Board.getSquareNum(col, toRow));
-            square2 = Board.getSquareNum(toCol, row);
-        }
+    }
 
-        boolean firstSquaresAreAdjacent = board.squaresAreConnected(currentPosition, square2);
-        boolean secondThirdSquaresAreAdjacent = board.squaresAreConnected(square2, squareNum);
-        boolean allThreeSquareConnected = firstSquaresAreAdjacent && secondThirdSquaresAreAdjacent;
-
-        return occupier != GameRuleConstants.EMPTY && occupierOfToSquare == GameRuleConstants.EMPTY && allThreeSquareConnected;
-
+    public boolean canJumpOver(int id, int toSquare){
+        int start = getPlayerPosition(id);
+        return board.canJumpOver(start, toSquare);
     }
 
     boolean canJumpDiagonally(int id, int squareNum){
-        //squareNum is in adjacency set of current square
-        //square Num is in a different row and different column
-        //another player occupies the square in adjacent column XOR adjacent row
-        //square occupied by above player is adjacent to squareNum
-//
-//
-//         __ __ [ ]
-//        [ ][P][X]
-//        [ ][ ][ ]
-//
-//
-
-        int currentPosition = getPlayerPosition(id);
-        int col = Board.getCol(currentPosition);
-        int row = Board.getRow(currentPosition);
-        int toCol = Board.getCol(squareNum);
-        int toRow = Board.getRow(squareNum);
-
-        int rowDiff = Math.abs(row - toRow);
-        int colDiff = Math.abs(col - toCol);
-        if (rowDiff + colDiff == 2 && board.squares[currentPosition].isInAdjacencySet(squareNum)){
-            int horizontalSquare = Board.getSquareNum(toCol, row);
-            int verticalSquare = Board.getSquareNum(col, toRow);
-
-            boolean validMove = board.getOccupierAtSquare(horizontalSquare) != GameRuleConstants.EMPTY &&
-                    board.squares[verticalSquare].isAdjacent(squareNum) && !board.squares[verticalSquare].isInAdjacencySet(squareNum);
-            return validMove;
-        }
         return false;
     }
 
@@ -193,6 +150,6 @@ public class Session {
 
     public boolean isSquareOccupied(int square)
     {
-        return board.getOccupierAtSquare(square) != GameRuleConstants.EMPTY;
+        return !board.squareIsEmpty(square);
     }
 }
