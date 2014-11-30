@@ -26,23 +26,15 @@ public class Square {
     }
     public void initializeAdjacencySet() {
         adjacencySet = new ArrayList<Integer>();
-        int rowBelow = row - 1;
-        int rowAbove = row + 1;
-        int rows[] = {rowBelow, row, rowAbove};
-        int colLeft = col - 1;
-        int colRight = col + 1;
-        int cols[] = {colLeft, col, colRight};
-
-        for (int i = 0; i < rows.length; i++) {
-            for (int j = 0; j < cols.length; j++){
-                if (isValidRow(rows[i]) && isValidCol(cols[j])) {
-                    int squareIndex = getSquareNum(cols[j], rows[i]);
-                    if(squareIndex != squareNum)
-                        adjacencySet.add(squareIndex);
-                }
+        int adjacentSquares[] = new int[] {squareNum - 1, squareNum - 9, squareNum + 1, squareNum + 9};
+        for(int i = 0; i < adjacentSquares.length; i++) {
+            int square = adjacentSquares[i];
+            if (Board.isValidNumber(square) && isBeside(square)) {
+                adjacencySet.add(square);
             }
         }
     }
+
     public boolean didOccupySquare(int playerID){
         if(occupierID == GameRuleConstants.EMPTY){
             occupierID = playerID;
@@ -72,7 +64,7 @@ public class Square {
         }
     }
 
-    public boolean isAdjacent(int squareNum){
+    public boolean isBeside(int squareNum){
         int row = getRow(squareNum);
         int col = getCol(squareNum);
         int rowDiff = Math.abs(this.row - row);
@@ -89,17 +81,6 @@ public class Square {
     }
     public int getCol(int squareNum){
         return squareNum % 9;
-    }
-    public int getSquareNum(int col, int row){
-
-        return row*9 + col;
-    }
-
-    private boolean isValidRow(int row){
-        return row >=0  && row < GameRuleConstants.NUM_ROWS;
-    }
-    private boolean isValidCol(int col){
-        return col >= 0 && col < GameRuleConstants.NUM_COLS;
     }
 
     public boolean isEmpty()

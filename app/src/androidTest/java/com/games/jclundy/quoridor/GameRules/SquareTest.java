@@ -16,7 +16,7 @@ public class SquareTest extends ApplicationTestCase<Application> {
         assertEquals(40, square.squareNum);
         assertEquals(4, square.row);
         assertEquals(4, square.col);
-        assertEquals(8, square.adjacencySet.size());
+        assertEquals(4, square.adjacencySet.size());
         assertFalse(square.hasWall);
         assertEquals(GameRuleConstants.EMPTY, square.occupierID);
     }
@@ -26,7 +26,7 @@ public class SquareTest extends ApplicationTestCase<Application> {
         assertEquals(0, square.squareNum);
         assertEquals(0, square.row);
         assertEquals(0, square.col);
-        assertEquals(3, square.adjacencySet.size());
+        assertEquals(2, square.adjacencySet.size());
         assertFalse(square.hasWall);
         assertEquals(GameRuleConstants.EMPTY, square.occupierID);
     }
@@ -65,7 +65,7 @@ public class SquareTest extends ApplicationTestCase<Application> {
         List<Integer> actual = square.adjacencySet;
         assertEquals(expected.length, actual.size());
         for(int i = 0; i < actual.size(); i++){
-            assertTrue(square.isAdjacent(expected[i]));
+            assertTrue(square.isBeside(expected[i]));
             assertTrue(actual.contains(expected[i]));
         }
     }
@@ -110,7 +110,7 @@ public class SquareTest extends ApplicationTestCase<Application> {
     private void compareAdjacencyOfSet(int number, int [] set){
         Square square = new Square(number);
         for(int i = 0; i < set.length; i++){
-            assertTrue(square.isAdjacent(set[i]));
+            assertTrue(square.isBeside(set[i]));
         }
     }
 
