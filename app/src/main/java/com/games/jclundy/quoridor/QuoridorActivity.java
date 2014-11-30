@@ -30,7 +30,8 @@ public class QuoridorActivity extends Activity
     private HashMap<Integer, Integer> playerImageMap;
     private HashMap<Integer, String> playerNameMap;
     private Session session;
-    private Switch toggle;
+    private Switch wallMode;
+    private Switch moveMode;
     private int numPlayers;
     private TextView gameStatusLabel;
 
@@ -59,7 +60,8 @@ public class QuoridorActivity extends Activity
         playerImageMap.put(GameRuleConstants.PLAYER_IDS[2], R.drawable.greencircle);
         playerImageMap.put(GameRuleConstants.PLAYER_IDS[3], R.drawable.redcircle);
 
-        toggle = (Switch) findViewById(R.id.toggle);
+        wallMode = (Switch) findViewById(R.id.toggle);
+        moveMode = (Switch) findViewById(R.id.moveMode);
 
         playerNameMap = new HashMap<Integer, String>();
         playerNameMap.put(GameRuleConstants.PLAYER_IDS[0], "BLUE PLAYER");
@@ -115,26 +117,35 @@ public class QuoridorActivity extends Activity
                 int action = event.getAction();
                 if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE)
                 {
-                    boolean isVertical = toggle.isChecked();
+                    boolean isMoveMode = moveMode.isChecked();
                     int position = squaresTable.getPosition(x, y);
-                    position = Board.getValidSquareForWall(position);
-                    if(session.canPlaceWall(position, isVertical))
-                    {
-                        int currentPlayerPosition = session.getCurrentPlayerPosition();
-                        squaresTable.unHighlightSquare(currentPlayerPosition);
-
-                        session.placeWall(position, isVertical);
-                        squaresTable.placeWall(position, isVertical);
-
-                        handleNextMove();
-                    }
+                    if(isMoveMode)
+                        handleMove(position);
                     else
-                        handleInvalidMove();
+                        handleWallPlacement(position);
                     return true;
                 }
                 return false;
             }
         };
+    }
+
+    private void handleWallPlacement(int position)
+    {
+        boolean isVertical = wallMode.isChecked();
+        position = Board.getValidSquareForWall(position);
+        if(session.canPlaceWall(position, isVertical))
+        {
+            int currentPlayerPosition = session.getCurrentPlayerPosition();
+            squaresTable.unHighlightSquare(currentPlayerPosition);
+
+            session.placeWall(position, isVertical);
+            squaresTable.placeWall(position, isVertical);
+
+            handleNextMove();
+        }
+        else
+            handleInvalidMove();
     }
 
     private void createBoard()
@@ -166,7 +177,7 @@ public class QuoridorActivity extends Activity
             @Override
             public void onClick(View view) {
                 int currentPlayerPosition = session.getCurrentPlayerPosition();
-                int newPosition = currentPlayerPosition;
+                int newPosition;
                 int diff = 0;
                 switch (view.getId()) {
                     case R.id.up:
@@ -186,7 +197,7 @@ public class QuoridorActivity extends Activity
                 }
                 newPosition = currentPlayerPosition + diff;
 
-                if (needsJumpingOver(currentPlayerPosition, newPosition))
+                if (needsJumpingOver(newPosition))
                     newPosition += diff;
 
                 handleMove(newPosition);
@@ -194,7 +205,7 @@ public class QuoridorActivity extends Activity
         };
     }
 
-    private boolean needsJumpingOver(int fromSquare, int toSquare)
+    private boolean needsJumpingOver(int toSquare)
     {
         boolean squareIsOccupied = session.isSquareOccupied(toSquare);
         return squareIsOccupied;

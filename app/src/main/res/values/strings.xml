@@ -23,4 +23,6 @@
     <string name="quit"> Quit </string>
     <string name="restart"> Restart </string>
     <string name="newGame"> New Game </string>
+    <string name="movePiece"> Move Piece </string>
+    <string name="placeWall"> Place Wall </string>
 </resources>
