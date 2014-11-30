@@ -124,8 +124,17 @@ public class Session {
     }
 
     public boolean canJumpOver(int id, int toSquare){
+        if (!Board.isValidNumber(toSquare))
+            return false;
         int start = getPlayerPosition(id);
         return board.canJumpOver(start, toSquare);
+    }
+
+    public boolean canMoveDiagonally(int toSquare){
+        if (!Board.isValidNumber(toSquare))
+            return false;
+        int currentSquare = getCurrentPlayerPosition();
+        return board.canMoveDiagonally(currentSquare, toSquare);
     }
 
     public boolean playerHasWon(int playerID){
@@ -148,6 +157,9 @@ public class Session {
 
     public boolean isSquareOccupied(int square)
     {
-        return !board.squareIsEmpty(square);
+        if(Board.isValidNumber(square)){
+            return !board.squareIsEmpty(square);
+        }
+        return false;
     }
 }

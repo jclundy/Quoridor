@@ -353,4 +353,96 @@ public class SessionTest extends ApplicationTestCase<Application> {
 
     }
 
+    public void testDiagonalMove()
+    {
+        assertCanMoveDiagonally();
+        assertCanMoveDiagonallyWithPiece();
+        assertCannotMoveDiagonallyIntoWall();
+        assertCannotMoveDiagonallyOverEdge();
+    }
+
+    private void assertCanMoveDiagonally()
+    {
+        int position2 = 4;
+        int position1 = 13;
+        int wallPosition = 13;
+        Session session = new Session(2);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+
+        session.placeWall(0, true);
+
+        assertFalse(session.canMoveDiagonally(position2 + 10));
+        assertFalse(session.canMoveDiagonally(position2 + 8));
+
+        session.placeWall(40, true);
+
+        session.placeWall(wallPosition, false);
+
+        assertTrue(session.canMoveDiagonally(position2 + 10));
+        assertTrue(session.canMoveDiagonally(position2 + 8));
+    }
+
+    private void assertCanMoveDiagonallyWithPiece()
+    {
+        int position2 = 13;
+        int position1 = 4;
+        int position3 = 22;
+        Session session = new Session(3);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+
+        assertFalse(session.canMoveDiagonally(position1 + 10));
+        assertFalse(session.canMoveDiagonally(position1 + 8));
+
+        session.board.transportPiece(GameRuleConstants.PLAYER_3, position3);
+
+        assertTrue(session.canMoveDiagonally(position1 + 10));
+        assertTrue(session.canMoveDiagonally(position1 + 8));
+    }
+
+    private void assertCannotMoveDiagonallyIntoWall()
+    {
+        int position2 = 13;
+        int position1 = 4;
+        int wallPosition1 = 4;
+        int wallPosition2 = 12;
+
+        Session session = new Session(3);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+
+        session.placeWall(wallPosition2, true);
+        session.placeWall(wallPosition1, true);
+
+        assertFalse(session.canMoveDiagonally(position1 + 10));
+        assertFalse(session.canMoveDiagonally(position1 + 8));
+    }
+
+    private void assertCannotMoveDiagonallyOverEdge()
+    {
+        Session session = new Session(2);
+
+        int position2 = 72;
+        int position1 = position2 - 9;
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        assertFalse(session.canMoveDiagonally(position2 + 1));
+        assertFalse(session.canMoveDiagonally(position2 - 1));
+    }
+
+    public void testIsSquareOccupied()
+    {
+        int startPosition1 = GameRuleConstants.START_POSITIONS[0];
+        Session session = new Session(2);
+        assertTrue(session.isSquareOccupied(startPosition1));
+        assertTrue(session.isSquareOccupied(GameRuleConstants.START_POSITIONS[1]));
+
+        session.makeMove(startPosition1 + 9);
+        assertTrue(session.isSquareOccupied(startPosition1 + 9));
+
+        assertFalse(session.isSquareOccupied(80));
+        assertFalse(session.isSquareOccupied(0));
+        assertFalse(session.isSquareOccupied(-1));
+        assertFalse(session.isSquareOccupied(81));
+    }
 }

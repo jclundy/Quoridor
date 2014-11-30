@@ -148,31 +148,4 @@ public class BoardTest extends ApplicationTestCase<Application>{
     }
 }
 
-/*
-18 19
-------
-9 | 10
-0 | 1
-
-34  35
-25  26
-------
-16  17
-7   8
-
-
-      33  31 | 32
-      24  22 | 23
-      12  13   14
-
-
-  79  80
-  70  71
-
-
-
-75  76  77
-66  67  68
-
- */
 

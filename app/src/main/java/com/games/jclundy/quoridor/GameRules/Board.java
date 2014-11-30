@@ -255,4 +255,71 @@ public class Board {
     {
         return getOccupierAtSquare(squareNum) == GameRuleConstants.EMPTY;
     }
+
+    boolean canMoveDiagonally(int start, int end)
+    {
+        boolean hasAdjacentOpponent = hasAdjacentOpponent(start);
+        if(hasAdjacentOpponent)
+        {
+            int opponentPos = getAdjacentOpponent(start);
+            Square endSquare = squares[end];
+            boolean endIsAdjacentOpponent = endSquare.isInAdjacencySet(opponentPos);
+            boolean startIsDiagonalFromEndSquare = squaresAreDiagonal(start, end);
+            boolean opponentIsBlockedFromBehind = squareIsBlockedFromBehind(opponentPos, start);
+
+            return endIsAdjacentOpponent && startIsDiagonalFromEndSquare
+                    && opponentIsBlockedFromBehind;
+        }
+
+        return false;
+    }
+
+    private boolean hasAdjacentOpponent(int squareNum)
+    {
+        Square fromSquare = squares[squareNum];
+        for(int i = 0; i < playerPositions.length; i++)
+        {
+            int playerPosition = playerPositions[i];
+            if (fromSquare.isInAdjacencySet(playerPosition) && squareNum != playerPosition)
+                return true;
+        }
+        return false;
+    }
+
+    private int getAdjacentOpponent(int squareNum)
+    {
+        Square fromSquare = squares[squareNum];
+        for(int i = 0; i < playerPositions.length; i++)
+        {
+            int playerPosition = playerPositions[i];
+            if (fromSquare.isInAdjacencySet(playerPosition) && squareNum != playerPosition)
+                return playerPosition;
+        }
+        return -1;
+    }
+
+    private boolean squaresAreDiagonal(int first, int second)
+    {
+        int row1 = getRow(first);
+        int row2 = getRow(second);
+        int col1 = getCol(first);
+        int col2 = getCol(second);
+
+        return Math.abs(row2 - row1) == 1 && Math.abs(col2- col1) == 1;
+    }
+
+    private boolean squareIsBlockedFromBehind(int occupiedSquare, int squareInFront)
+    {
+        int diff = occupiedSquare - squareInFront;
+        int squareBehindPos = occupiedSquare + diff;
+
+        boolean squareBehindIsValid = isValidNumber(squareBehindPos);
+
+        if(squareBehindIsValid)
+        {
+            Square squareBehind = squares[squareBehindPos];
+            return squareBehind.isOccupied() || !squareBehind.isInAdjacencySet(occupiedSquare);
+        }
+        return false;
+    }
 }
