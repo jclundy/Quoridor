@@ -30,7 +30,7 @@ public class Session {
 
     public boolean isMoveValid(int toSquare)
     {
-        return canSlideTo(toSquare) || canJumpOver(currentPlayerID, toSquare);
+        return canSlideTo(toSquare) || canJumpOver(currentPlayerID, toSquare) || canMoveDiagonally(toSquare);
     }
 
     private boolean canSlideTo(int toSquare)
@@ -85,6 +85,8 @@ public class Session {
     public void makeMove(int squareNum){
         if(canJumpOver(currentPlayerID, squareNum))
             board.jumpPiece(currentPlayerID, squareNum);
+        else if(canMoveDiagonally(squareNum))
+            board.moveDiagonally(currentPlayerID, squareNum);
         else if(canSlideTo(squareNum)){
             board.movePiece(currentPlayerID, squareNum);
         }

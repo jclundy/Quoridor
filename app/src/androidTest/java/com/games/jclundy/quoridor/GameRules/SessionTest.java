@@ -430,6 +430,23 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertFalse(session.canMoveDiagonally(position2 - 1));
     }
 
+    public void testMoveDiagonal()
+    {
+        int position2 = 13;
+        int position1 = 4;
+        int position3 = 22;
+        Session session = new Session(3);
+        session.board.transportPiece(GameRuleConstants.PLAYER_1, position1);
+        session.board.transportPiece(GameRuleConstants.PLAYER_2, position2);
+        session.board.transportPiece(GameRuleConstants.PLAYER_3, position3);
+
+
+        assertTrue(session.isMoveValid(position1 + 10));
+        session.makeMove(position1 + 10);
+        assertEquals(position1 + 10, session.getPlayerPosition(GameRuleConstants.PLAYER_1));
+    }
+
+
     public void testIsSquareOccupied()
     {
         int startPosition1 = GameRuleConstants.START_POSITIONS[0];
@@ -445,4 +462,6 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertFalse(session.isSquareOccupied(-1));
         assertFalse(session.isSquareOccupied(81));
     }
+
+
 }

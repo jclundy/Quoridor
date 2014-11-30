@@ -69,6 +69,13 @@ public class Board {
             updatePlayerPosition(playerID, toSquareNum, fromSquareNum);
     }
 
+    public void moveDiagonally(int playerID, int toSquareNum)
+    {
+        int fromSquareNum = getPlayerPosition(playerID);
+        if(canMoveDiagonally(fromSquareNum, toSquareNum))
+            updatePlayerPosition(playerID, toSquareNum, fromSquareNum);
+    }
+
     public void placeWall(int squareNum, boolean isVertical){
         Square square = squares[squareNum];
         if(!square.hasWall){
