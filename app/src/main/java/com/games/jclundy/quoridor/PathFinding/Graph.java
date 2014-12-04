@@ -57,6 +57,7 @@ public class Graph {
                 return;
 
             visited[currentNodeIndex] = true;
+            unvisitedCount --;
             iterateThroughAdjacencySetOfNode(currentNodeIndex);
         }
     }

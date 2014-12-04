@@ -5,14 +5,14 @@ import java.util.List;
 
 public class Square {
     int occupierID;
-    int squareNum;
-    int row;
-    int col;
+    public int squareNum;
+    public int row;
+    public int col;
     boolean hasWall;
     boolean canPlaceVerticalWall;
     boolean canPlaceHorizontalWall;
 
-    List<Integer> adjacencySet;
+    public List<Integer> adjacencySet;
 
     public Square(int number){
         squareNum = number;
