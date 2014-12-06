@@ -1,5 +1,6 @@
 package com.games.jclundy.quoridor.PathFinding;
 
+import com.games.jclundy.quoridor.GameRules.GameRuleConstants;
 import com.games.jclundy.quoridor.GameRules.Square;
 
 import java.util.List;
@@ -14,9 +15,11 @@ public class Graph {
     private boolean [] visited;
     private Square[] nodes;
     private int unvisitedCount;
+    private int [] previous;
+    private int [] endNodes;
 
-    private static final int INFINTE = 99999;
-    private static final int UNDEFINED = -1111;
+    static final int INFINTE = 99999;
+    static final int UNDEFINED = -1111;
 
     public Graph(int startNode, Square[] squares)
     {
@@ -24,11 +27,49 @@ public class Graph {
         nodes = squares;
         distances = new int[squares.length];
         visited = new boolean[squares.length];
+        previous = new int[squares.length];
+        endNodes = GameRuleConstants.PLAYER_1_ENDZONE;
+    }
+
+    public Graph(int startNode, Square[] squares, int [] endzone)
+    {
+        start = startNode;
+        nodes = squares;
+        distances = new int[squares.length];
+        visited = new boolean[squares.length];
+        previous = new int[squares.length];
+        endNodes = endzone;
     }
 
     public int getDistanceToNode(int nodeIndex)
     {
         return distances[nodeIndex];
+    }
+
+    public Stack getShortestPathToNode(int nodeIndex)
+    {
+        Stack moveStack = new Stack();
+        int index = nodeIndex;
+
+        while(index != start)
+        {
+            if(previous[index] == UNDEFINED)
+                return new Stack();
+            moveStack.push(previous[index]);
+            index = previous[index];
+        }
+        return moveStack;
+    }
+
+    public boolean hasOpenPathToFinish()
+    {
+        for(int i = 0; i < endNodes.length; i++)
+        {
+            int endNode = endNodes[i];
+            if(distances[endNode] != INFINTE)
+                return true;
+        }
+        return false;
     }
 
     public void runDijkstra()
@@ -39,11 +80,12 @@ public class Graph {
 
     private void initialize()
     {
+        unvisitedCount = nodes.length;
         for(int i = 0; i < visited.length; i++)
         {
-            unvisitedCount = nodes.length;
             visited[i] = false;
             distances[i] = INFINTE;
+            previous[i] = UNDEFINED;
         }
         distances[start] = 0;
     }
@@ -84,8 +126,11 @@ public class Graph {
         {
             int neighbourIndex = node.adjacencySet.get(i);
             int newDistance = distances[nodeIndex] + 1;
-            if(newDistance < distances[neighbourIndex])
+
+            if(newDistance < distances[neighbourIndex]) {
                 distances[neighbourIndex] = newDistance;
+                previous[neighbourIndex] = nodeIndex;
+            }
         }
     }
 }

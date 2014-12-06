@@ -62,7 +62,7 @@ public class Player {
         return chipsLeft;
     }
 
-    protected class Stack {
+    public class Stack {
         private int count;
         private List<Move> stack;
         Stack(){

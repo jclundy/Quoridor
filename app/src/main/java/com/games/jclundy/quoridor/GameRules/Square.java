@@ -24,6 +24,22 @@ public class Square {
         canPlaceHorizontalWall = true;
         canPlaceVerticalWall = true;
     }
+
+    public Square(Square square)
+    {
+        this.squareNum = square.squareNum;
+        this.occupierID = square.occupierID;
+        this.hasWall = square.hasWall;
+        this.row = square.row;
+        this.col = square.col;
+        this.adjacencySet = new ArrayList<Integer>();
+        for(int i = 0; i < square.adjacencySet.size(); i++) {
+            this.adjacencySet.add(square.adjacencySet.get(i));
+        }
+        this.canPlaceVerticalWall = square.canPlaceVerticalWall;
+        this.canPlaceHorizontalWall = square.canPlaceHorizontalWall;
+    }
+
     public void initializeAdjacencySet() {
         adjacencySet = new ArrayList<Integer>();
         int adjacentSquares[] = new int[] {squareNum - 1, squareNum - 9, squareNum + 1, squareNum + 9};

@@ -1,5 +1,7 @@
 package com.games.jclundy.quoridor.GameRules;
 
+import com.games.jclundy.quoridor.PathFinding.Graph;
+
 import java.util.HashMap;
 
 public class Session {
@@ -114,7 +116,8 @@ public class Session {
     public boolean canPlaceWall(int squareNum, boolean isVertical)
     {
         int chipsLeft  = playerDict.get(currentPlayerID).getChipsLeft();
-        return board.canPlaceWall(squareNum, isVertical)  && chipsLeft > 0;
+        boolean doesNotBlockOffPlayer = wallDoesNotBlockOffPlayer(squareNum, isVertical);
+        return board.canPlaceWall(squareNum, isVertical) && chipsLeft > 0 && doesNotBlockOffPlayer;
     }
 
     public void jumpToSquare(int toSquare)
@@ -163,5 +166,21 @@ public class Session {
             return !board.squareIsEmpty(square);
         }
         return false;
+    }
+
+    private boolean wallDoesNotBlockOffPlayer(int wallPos, boolean isVertical)
+    {
+        Board boardTemp = new Board(this.board);
+        boardTemp.placeWall(wallPos, isVertical);
+
+        for (int i = 0; i < numPlayers; i ++) {
+            int playerPos = getPlayerPosition(GameRuleConstants.PLAYER_IDS[i]);
+            Graph graph = new Graph(playerPos, boardTemp.squares, GameRuleConstants.PLAYER_ENDZONES[i]);
+            graph.runDijkstra();
+            boolean hasOpenPathToFinish = graph.hasOpenPathToFinish();
+            if(!hasOpenPathToFinish)
+                return false;
+        }
+        return true;
     }
 }

@@ -463,5 +463,15 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertFalse(session.isSquareOccupied(81));
     }
 
+    public void testCannotBlockOffPlayer()
+    {
+        Session session = new Session(2);
+        assertTrue(session.canPlaceWall(3, true));
+        session.placeWall(3, true);
+        assertTrue(session.canPlaceWall(4, false));
+        session.placeWall(4, false);
 
+        assertFalse(session.canPlaceWall(5, true));
+        assertTrue(session.isMoveValid(5));
+    }
 }

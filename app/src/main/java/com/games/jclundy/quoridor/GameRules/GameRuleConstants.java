@@ -22,8 +22,15 @@ public class GameRuleConstants {
 
     public static final int START_POSITIONS[] = {4, 76, 36, 44};
 
+    public static final int [] PLAYER_1_ENDZONE = {72, 73, 74, 75, 76, 77, 78, 79, 80};
+    public static final int [] PLAYER_2_ENDZONE = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    public static final int [] PLAYER_3_ENDZONE = {8, 17, 26, 35, 44, 53, 62, 71, 80};
+    public static final int [] PLAYER_4_ENDZONE = {0, 9, 18, 27, 36, 45, 54, 63, 72};
+    public static final int [][] PLAYER_ENDZONES = {PLAYER_1_ENDZONE, PLAYER_2_ENDZONE, PLAYER_3_ENDZONE, PLAYER_4_ENDZONE};
+
     static final String PLACE_WALL = "placeWall";
     static final String MOVE_PAWN = "movePawn";
+
 
     static final int TOTAL_WALL_NUM = 20;
 }

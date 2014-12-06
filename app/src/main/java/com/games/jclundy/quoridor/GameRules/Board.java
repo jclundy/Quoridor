@@ -1,7 +1,7 @@
 package com.games.jclundy.quoridor.GameRules;
 
 public class Board {
-    Square squares[];
+    public Square squares[];
     int numPlayers;
     int playerPositions[];
     int playerIDs[];
@@ -17,6 +17,17 @@ public class Board {
         for(int i = 0; i < numPlayers; i++){
             int position = playerPositions[i];
             squares[position].didOccupySquare(i);
+        }
+    }
+    public Board(Board board)
+    {
+        this.numPlayers = board.numPlayers;
+        this.playerPositions = board.playerPositions;
+        this.playerIDs = board.playerIDs;
+        this.squares = new Square[board.squares.length];
+        for(int i = 0; i < squares.length; i++)
+        {
+            this.squares[i] = new Square(board.squares[i]);
         }
     }
 
@@ -213,7 +224,7 @@ public class Board {
         return validNum;
     }
     public static boolean isValidNumber(int number){
-        return number < 80 && number >= 0;
+        return number <= 80 && number >= 0;
     }
 
     boolean canJumpOver(int start, int end)
