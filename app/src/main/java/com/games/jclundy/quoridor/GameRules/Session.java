@@ -95,6 +95,27 @@ public class Session {
         updateCurrentPlayer();
     }
 
+    public void playTurn(PlayerMove move)
+    {
+        int squareNum = move.position;
+        int moveType = move.moveType;
+
+        switch (moveType)
+        {
+            case 1:
+                makeMove(squareNum);
+                break;
+            case 2:
+                placeWall(squareNum, true);
+                break;
+            case 3:
+                placeWall(squareNum, false);
+                break;
+            default:
+                break;
+        }
+    }
+
     public void placeWall(int squareNum, boolean isVertical)
     {
         if(board.canPlaceWall(squareNum, isVertical))
