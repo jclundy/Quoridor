@@ -112,7 +112,7 @@ public class SquareImageView extends ImageView {
         regenerateBackground();
     }
 
-    private void regenerateBackground() {
+    public void regenerateBackground() {
         int arraySize = resourceIDs.size();
         Drawable[] imgLayers = new Drawable[arraySize];
         for(int i = 0; i < arraySize; i++){
@@ -141,5 +141,13 @@ public class SquareImageView extends ImageView {
     public void unHighlightPiece() {
         updateBackgroundToDefault();
         drawPiece();
+    }
+
+    public void drawBackground()
+    {
+        if(pieceID != -1)
+            drawPiece();
+        else
+            setImageDrawable(background);
     }
 }

@@ -123,16 +123,30 @@ public class SquaresTableView extends ViewGroup {
         }
     }
 
-    public void highlightSquare(int position) {
+    public void highlightPiece(int position) {
         SquareImageView square = (SquareImageView) getChildAt(position);
         square.highlightPiece();
     }
 
-    public void unHighlightSquare(int position) {
+    public void unHighlightPiece(int position) {
         SquareImageView square = (SquareImageView) getChildAt(position);
         square.unHighlightPiece();
+        square.drawBackground();
     }
 
+    public void highlightSquare(int position)
+    {
+        SquareImageView square = (SquareImageView) getChildAt(position);
+        square.updateBackgroundToHighlighted();
+        square.drawBackground();
+    }
+
+    public void unHighlightSquare(int position)
+    {
+        SquareImageView square = (SquareImageView) getChildAt(position);
+        square.updateBackgroundToDefault();
+        square.drawBackground();
+    }
     public int getRow(int y) {
         return (int) Math.ceil(y / squareSize);
     }
@@ -150,5 +164,23 @@ public class SquaresTableView extends ViewGroup {
         int row = getRow(y);
         int col = getColumn(x);
         return  col + row * numCol;
+    }
+
+    public void highlightEndzone(int [] squares)
+    {
+        for(int i = 0; i < squares.length; i++)
+        {
+            int square = squares[i];
+            highlightSquare(square);
+
+        }
+    }
+
+    public void unHighlightEndzone(int [] squares)
+    {
+        for(int i = 0; i < squares.length; i++) {
+            int square = squares[i];
+            unHighlightSquare(square);
+        }
     }
 }

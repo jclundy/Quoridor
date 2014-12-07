@@ -137,11 +137,11 @@ public class QuoridorActivity extends Activity
         if(session.canPlaceWall(position, isVertical))
         {
             int currentPlayerPosition = session.getCurrentPlayerPosition();
-            squaresTable.unHighlightSquare(currentPlayerPosition);
+            squaresTable.unHighlightPiece(currentPlayerPosition);
 
             session.placeWall(position, isVertical);
             squaresTable.placeWall(position, isVertical);
-
+            squaresTable.unHighlightEndzone(GameRuleConstants.PLAYER_ENDZONES[session.getCurrentPlayerID()]);
             handleNextMove();
         }
         else
@@ -152,7 +152,7 @@ public class QuoridorActivity extends Activity
     {
         squaresTable = (SquaresTableView) findViewById(R.id.squaresTable);
         squaresTable.setOnTouchListener(generateBoardListener());
-        int squareSize = 50;
+        int squareSize = 47;
         squaresTable.disposeSquares(500, 500, squareSize, numPlayers);
     }
 
@@ -220,11 +220,10 @@ public class QuoridorActivity extends Activity
             int playerImg = playerImageMap.get(currentPlayer);
             squaresTable.movePawn(session.getPlayerPosition(currentPlayer), playerImg);
             handleGameStatus(currentPlayer);
+            squaresTable.unHighlightEndzone(GameRuleConstants.PLAYER_ENDZONES[currentPlayer]);
         }
         else
-        {
             handleInvalidMove();
-        }
     }
 
     private void handleGameStatus(int lastPlayerToMove)
@@ -237,7 +236,7 @@ public class QuoridorActivity extends Activity
 
     private void handleVictory(int winningPlayer)
     {
-        squaresTable.highlightSquare(session.getPlayerPosition(winningPlayer));
+        squaresTable.highlightPiece(session.getPlayerPosition(winningPlayer));
         squaresTable.setOnTouchListener(null);
         setButtonsListener(null);
         String winningPlayerName = playerNameMap.get(winningPlayer);
@@ -248,8 +247,11 @@ public class QuoridorActivity extends Activity
     private void handleNextMove()
     {
         int nextPlayerPosition = session.getCurrentPlayerPosition();
-        squaresTable.highlightSquare(nextPlayerPosition);
+        squaresTable.highlightPiece(nextPlayerPosition);
         int nextPlayer = session.getCurrentPlayerID();
+
+        squaresTable.highlightEndzone(GameRuleConstants.PLAYER_ENDZONES[nextPlayer]);
+
         String nextPlayerName = playerNameMap.get(nextPlayer);
         String labelText = nextPlayerName + " TO MOVE";
         gameStatusLabel.setText(labelText);
