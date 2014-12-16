@@ -150,4 +150,23 @@ public class SquareImageView extends ImageView {
         else
             setImageDrawable(background);
     }
+
+    public void removeWall()
+    {
+        if(pieceID == -1)
+        {
+            int topIndex = resourceIDs.size() - 1;
+            resourceIDs.remove(topIndex);
+            regenerateBackground();
+            drawBackground();
+        }
+        else
+        {
+            int index = resourceIDs.size() - 2;
+            if(index > 0) {
+                resourceIDs.remove(index);
+                drawPiece();
+            }
+        }
+    }
 }

@@ -474,4 +474,47 @@ public class SessionTest extends ApplicationTestCase<Application> {
         assertFalse(session.canPlaceWall(5, true));
         assertTrue(session.isMoveValid(5));
     }
+
+    public void testUndoMove()
+    {
+        Session session = new Session(2);
+        session.makeMove(GameRuleConstants.START_POSITIONS[0] + 9);
+        assertMoveCountUpdated(1, session);
+        session.undoMove();
+        assertMoveCountUpdated(0, session);
+        assertCurrentPlayerUpdated(GameRuleConstants.PLAYER_1, session);
+        assertPlayerPositionUpdated(GameRuleConstants.START_POSITIONS[0], session);
+    }
+
+    public void testCannotUndoMoveOnFirstTurn()
+    {
+        Session session = new Session(2);
+        session.undoMove();
+        assertMoveCountUpdated(0, session);
+        assertCurrentPlayerUpdated(GameRuleConstants.PLAYER_1, session);
+        assertPlayerPositionUpdated(GameRuleConstants.START_POSITIONS[0], session);
+    }
+
+    public void testCanUndoMultipleMoves()
+    {
+
+    }
+    private void assertMoveCountUpdated(int expected, Session session)
+    {
+        assertEquals(expected, session.getMoveCount());
+    }
+    private void assertCurrentPlayerUpdated(int expected, Session session)
+    {
+        assertEquals(expected, session.getCurrentPlayerID());
+    }
+
+    private void assertPlayerPositionUpdated(int expected, Session session)
+    {
+        assertEquals(expected, session.getCurrentPlayerPosition());
+    }
+
+    public void testUndoPlaceWall()
+    {
+
+    }
 }

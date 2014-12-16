@@ -80,6 +80,13 @@ public class Square {
         }
     }
 
+    protected void addToAdjacencySet(int squareNum)
+    {
+        if(!adjacencySet.contains(squareNum)){
+            adjacencySet.add(squareNum);
+        }
+    }
+
     public boolean isBeside(int squareNum){
         int row = getRow(squareNum);
         int col = getCol(squareNum);

@@ -2,7 +2,9 @@ package com.games.jclundy.quoridor.GameRules;
 
 import com.games.jclundy.quoridor.PathFinding.Graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Session {
 
@@ -11,6 +13,7 @@ public class Session {
     protected HashMap<Integer, Player> playerDict;
     private int currentPlayerID;
     private int moveCount;
+    private MoveStack moveStack;
 
     public Session(int numberOfPlayers){
         moveCount = 0;
@@ -18,6 +21,7 @@ public class Session {
         board = new Board(numPlayers);
         initializePlayers();
         currentPlayerID = playerDict.get(GameRuleConstants.PLAYER_1).id;
+        moveStack = new MoveStack();
     }
 
     private void initializePlayers(){
@@ -84,17 +88,24 @@ public class Session {
         return board.getPlayerPosition(playerID);
     }
 
-    public void makeMove(int squareNum){
-        if(canJumpOver(currentPlayerID, squareNum))
+    public void makeMove(int squareNum) {
+        boolean successful = false;
+        if (canJumpOver(currentPlayerID, squareNum)) {
             board.jumpPiece(currentPlayerID, squareNum);
-        else if(canMoveDiagonally(squareNum))
+            successful = true;
+        } else if (canMoveDiagonally(squareNum)) {
             board.moveDiagonally(currentPlayerID, squareNum);
-        else if(canSlideTo(squareNum)){
+            successful = true;
+        } else if (canSlideTo(squareNum)) {
             board.movePiece(currentPlayerID, squareNum);
+            successful = true;
         }
-        updateCurrentPlayer();
+        if (successful) {
+            PlayerMove move = new PlayerMove(currentPlayerID, squareNum, 1);
+            moveStack.push(move);
+            updateCurrentPlayer();
+        }
     }
-
     public void playTurn(PlayerMove move)
     {
         int squareNum = move.position;
@@ -120,6 +131,10 @@ public class Session {
     {
         if(board.canPlaceWall(squareNum, isVertical))
         {
+            int moveType = isVertical? 2:3;
+            PlayerMove move = new PlayerMove(currentPlayerID, squareNum, moveType);
+            moveStack.push(move);
+
             board.placeWall(squareNum, isVertical);
             Player player = playerDict.get(currentPlayerID);
             player.recordMove(squareNum, true);
@@ -203,5 +218,51 @@ public class Session {
                 return false;
         }
         return true;
+    }
+
+    public void undoMove()
+    {
+        if(moveCount > 0)
+        {
+            moveStack.pop();
+            moveCount --;
+            currentPlayerID = GameRuleConstants.PLAYER_IDS[moveCount % numPlayers];
+            PlayerMove move = moveStack.peek();
+            switch(move.moveType)
+            {
+                case 1:
+                    board.playerPositions[currentPlayerID] = move.position;
+                case 2:
+
+                case 3:
+            }
+        }
+    }
+
+    public class MoveStack {
+        private int count;
+        private List<PlayerMove> stack;
+        MoveStack(){
+            count = 0;
+            stack = new ArrayList<PlayerMove>();
+        }
+        void push(PlayerMove move){
+            stack.add(move);
+            count++;
+        }
+        void pop(){
+            if(stack.size() > 0){
+                stack.remove(count - 1);
+                count--;
+            }
+        }
+
+        PlayerMove peek(){
+            return stack.get(count - 1);
+        }
+
+        int size(){
+            return stack.size();
+        }
     }
 }

@@ -340,4 +340,68 @@ public class Board {
         }
         return false;
     }
+
+    public void removeWall(int squareNum, boolean isVertical)
+    {
+        Square square = squares[squareNum];
+        square.hasWall = false;
+    }
+
+    private void undoInsertHorizontalWall(int squareNum){
+        int right = squareNum + 1;
+        int above = squareNum + 9;
+        int aboveRight = squareNum + 10;
+
+        Square first = squares[squareNum];
+        first.hasWall = false;
+        first.canPlaceVerticalWall = true;
+        first.canPlaceHorizontalWall = true;
+
+        Square second = squares[right];
+        second.canPlaceHorizontalWall = true;
+
+        if(getCol(squareNum) > 0){
+            int left = squareNum - 1;
+            Square leftSquare= squares[left];
+            leftSquare.canPlaceHorizontalWall = true;
+        }
+
+        undoRemoveAdjacencyOfSquares(squareNum, above);
+        undoRemoveAdjacencyOfSquares(squareNum, aboveRight);
+        undoRemoveAdjacencyOfSquares(right, above);
+        undoRemoveAdjacencyOfSquares(right, aboveRight);
+    }
+
+    private void undoInsertVerticalWall(int squareNum){
+        int above = squareNum + 9;
+        int aboveRight = squareNum + 10;
+        int right = squareNum + 1;
+
+        Square first = squares[squareNum];
+        first.hasWall = false;
+        first.canPlaceVerticalWall = true;
+        first.canPlaceHorizontalWall = true;
+
+        Square aboveSquare = squares[above];
+        aboveSquare.canPlaceVerticalWall = true;
+
+        if(getRow(squareNum) > 0){
+            int below = squareNum - 9;
+            Square belowSquare = squares[below];
+            belowSquare.canPlaceVerticalWall = true;
+        }
+
+        undoRemoveAdjacencyOfSquares(squareNum, right);
+        undoRemoveAdjacencyOfSquares(squareNum, aboveRight);
+        undoRemoveAdjacencyOfSquares(above, right);
+        undoRemoveAdjacencyOfSquares(above, aboveRight);
+    }
+
+    private void undoRemoveAdjacencyOfSquares(int first, int second){
+        Square firstSquare = squares[first];
+        Square secondSquare = squares[second];
+        firstSquare.addToAdjacencySet(second);
+        secondSquare.addToAdjacencySet(first);
+    }
+
 }

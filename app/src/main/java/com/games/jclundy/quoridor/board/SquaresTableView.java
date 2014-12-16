@@ -183,4 +183,17 @@ public class SquaresTableView extends ViewGroup {
             unHighlightSquare(square);
         }
     }
+
+    public void removeWall(int position, boolean isVertical)
+    {
+        SquareImageView firstSquare = (SquareImageView) getChildAt(position);
+        SquareImageView secondSquare;
+        int secondPosition = (isVertical) ? position + 9 : position + 1;
+        secondSquare = (SquareImageView) getChildAt(secondPosition);
+
+        if (firstSquare != null && secondSquare != null) {
+            firstSquare.removeWall();
+            secondSquare.removeWall();
+        }
+    }
 }
